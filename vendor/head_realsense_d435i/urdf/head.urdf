@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+  openarm D435i pan/tilt head — ARTICULATED (2-DOF).
+  Everything except the two motor axes is merged into rigid links:
+    base_link   : neck1 + neck2_r x2 + fpx330-s101 x2 + xc330#1 housing  (mounts to arm)
+    mid_link    : fpx330-s102 + xc330#2 housing        (rotated by PAN motor,  XC330 #1)
+    camera_link : fpx330-h101 + camera_fix + D435i      (rotated by TILT motor, XC330 #2)
+
+  Meshes are baked in each LINK-LOCAL frame, in millimeters -> scale 0.001 -> meters,
+  so every <visual>/<collision> origin is identity. Inertials are at each link COM
+  (from Fusion, hollow-shell real geometry). Visual = OBJ, Collision = STL.
+
+  Kinematics (from Fusion joints):
+    joint_pan  : base_link  -> mid_link   , axis Z (-Z in Fusion), at (22.5, 0, 38.5) mm in base frame
+    joint_tilt : mid_link   -> camera_link, axis Y,               at (0, -14.5, 27.5) mm in mid  frame
+
+  NOTE: joint limits / effort / velocity below are PLACEHOLDERS (Fusion had none).
+        Edit to your XC330 config + mechanical range. Units: rad, N*m, rad/s.
+-->
+<robot name="openarm_d435i_head">
+
+  <!-- ================= base_link (root, attaches to the arm) ================= -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.003423 -0.000003 0.003366" rpy="0 0 0"/>
+      <mass value="0.109629"/>
+      <inertia ixx="4.381646e-05" ixy="0" ixz="0"
+                                  iyy="7.657038e-05" iyz="0"
+                                                     izz="8.818679e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="../meshes/visual/head_base.obj" scale="0.001 0.001 0.001"/></geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="../meshes/collision/head_base.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= PAN motor (XC330 #1), base -> mid ================= -->
+  <joint name="joint_pan" type="revolute">
+    <parent link="base_link"/>
+    <child  link="mid_link"/>
+    <origin xyz="0.0225 0 0.0385" rpy="0 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="1.0" velocity="6.0"/>
+    <dynamics damping="0.02" friction="0.0"/>
+  </joint>
+
+  <!-- ================= mid_link ================= -->
+  <link name="mid_link">
+    <inertial>
+      <origin xyz="-0.000004 0.000202 0.019222" rpy="0 0 0"/>
+      <mass value="0.017073"/>
+      <inertia ixx="2.817369e-06" ixy="0" ixz="0"
+                                  iyy="2.429180e-06" iyz="0"
+                                                     izz="1.447213e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="../meshes/visual/head_mid.obj" scale="0.001 0.001 0.001"/></geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="../meshes/collision/head_mid.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= TILT motor (XC330 #2), mid -> camera ================= -->
+  <joint name="joint_tilt" type="revolute">
+    <parent link="mid_link"/>
+    <child  link="camera_link"/>
+    <origin xyz="0 -0.0145 0.0275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <!-- tilt limit set in CAD (Fusion Revolute 10): +-90 deg -->
+    <limit lower="-1.570796" upper="1.570796" effort="1.0" velocity="6.0"/>
+    <dynamics damping="0.02" friction="0.0"/>
+  </joint>
+
+  <!-- ================= camera_link (fpx330-h101 + camera_fix + D435i) ================= -->
+  <link name="camera_link">
+    <inertial>
+      <origin xyz="-0.000717 0.014670 0.032665" rpy="0 0 0"/>
+      <mass value="0.065101"/>
+      <inertia ixx="3.928919e-05" ixy="0" ixz="0"
+                                  iyy="1.017067e-05" iyz="0"
+                                                     izz="3.748699e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="../meshes/visual/head_camera.obj" scale="0.001 0.001 0.001"/></geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="../meshes/collision/head_camera.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+</robot>

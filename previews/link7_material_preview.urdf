@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<robot name="link7_material_preview">
+  <link name="world"/>
+  <link name="link7_mat_0_007_only">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat_0_007_only.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat_0_007_only" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat_0_007_only"/>
+    <origin xyz="-0.270 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="link7_mat_1_007_only">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat_1_007_only.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat_1_007_only" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat_1_007_only"/>
+    <origin xyz="-0.090 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="link7_mat_2_005_only">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat_2_005_only.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat_2_005_only" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat_2_005_only"/>
+    <origin xyz="0.090 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="link7_mat_3_001_only">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat_3_001_only.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat_3_001_only" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat_3_001_only"/>
+    <origin xyz="0.270 0 0" rpy="0 0 0"/>
+  </joint>
+</robot>

@@ -1,0 +1,1451 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="openarm_bimanual_link7_parts_preview">
+  <link name="world" />
+  <joint name="openarm_body_world_joint" type="fixed">
+    <parent link="world" />
+    <child link="openarm_body_link0" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_body_link0">
+    <visual name="openarm_body_link0_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/body/v10/visual/body_link0.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_body_link0_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/body/v10/collision/body_link0_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <mass value="13.89" />
+      <inertia ixx="1.653" ixy="0.0" ixz="0.0" iyy="1.653" iyz="0.0" izz="0.051" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_openarm_body_link0_joint" type="fixed">
+    <parent link="openarm_body_link0" />
+    <child link="openarm_left_link0" />
+    <origin rpy="-1.5708 0 0" xyz="0.0 0.031 0.698" />
+  </joint>
+  <link name="openarm_left_link0">
+    <visual name="openarm_left_link0_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link0.dae" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link0_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link0_symp.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0009483362816297526 -0.0001580207020448382 0.03076860287587199" />
+      <mass value="1.1432284943239561" />
+      <inertia ixx="0.001128" ixy="-4e-06" ixz="-3.3e-05" iyy="0.000962" iyz="-7e-06" izz="0.00147" />
+    </inertial>
+  </link>
+  <link name="openarm_left_link1">
+    <visual name="openarm_left_link1_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 0.0 -0.0625" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link1.dae" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link1_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 0.0 -0.0625" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link1_symp.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0011467657911800769 -3.319987657026362e-05 0.05395284380736254" />
+      <mass value="1.1416684646202298" />
+      <inertia ixx="0.001567" ixy="-1e-06" ixz="-2.9e-05" iyy="0.001273" iyz="1e-06" izz="0.001016" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint1" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.0625" />
+    <parent link="openarm_left_link0" />
+    <child link="openarm_left_link1" />
+    <axis xyz="0 0 1" />
+    <limit effort="40" lower="-3.490659" upper="1.3962629999999998" velocity="16.754666" />
+  </joint>
+  <link name="openarm_left_link2">
+    <visual name="openarm_left_link2_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0301 0.0 -0.1225" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link2.dae" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link2_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0301 0.0 -0.1225" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link2_symp.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00839629182351943 2.0145102027597523e-08 0.03256649300522363" />
+      <mass value="0.2775092746011571" />
+      <inertia ixx="0.000359" ixy="1e-06" ixz="-0.000109" iyy="0.000376" iyz="1e-06" izz="0.000232" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint2" type="revolute">
+    <origin rpy="-1.57079632679 0 0" xyz="-0.0301 0.0 0.06" />
+    <parent link="openarm_left_link1" />
+    <child link="openarm_left_link2" />
+    <axis xyz="-1 0 0" />
+    <limit effort="40" lower="-3.3161253267948965" upper="0.17453267320510335" velocity="16.754666" />
+  </joint>
+  <link name="openarm_left_link3">
+    <visual name="openarm_left_link3_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.18875" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link3.dae" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link3_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.18875" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link3_symp.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.002104752099628911 -0.0005549085042607548 0.09047470545721961" />
+      <mass value="1.073863338202347" />
+      <inertia ixx="0.004372" ixy="1e-06" ixz="1.1e-05" iyy="0.004319" iyz="-3.6e-05" izz="0.000661" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint3" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0301 0.0 0.06625" />
+    <parent link="openarm_left_link2" />
+    <child link="openarm_left_link3" />
+    <axis xyz="0 0 1" />
+    <limit effort="27" lower="-1.570796" upper="1.570796" velocity="5.445426" />
+  </joint>
+  <link name="openarm_left_link4">
+    <visual name="openarm_left_link4_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0315 -0.3425" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link4.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link4_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0315 -0.3425" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link4_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0029006831074562967 -0.03030575826634669 0.06339637422196209" />
+      <mass value="0.6348534566833373" />
+      <inertia ixx="0.000623" ixy="-1e-06" ixz="-1.9e-05" iyy="0.000511" iyz="3.8e-05" izz="0.000334" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint4" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.0 0.0315 0.15375" />
+    <parent link="openarm_left_link3" />
+    <child link="openarm_left_link4" />
+    <axis xyz="0 1 0" />
+    <limit effort="27" lower="0.0" upper="2.443461" velocity="5.445426" />
+  </joint>
+  <link name="openarm_left_link5">
+    <visual name="openarm_left_link5_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.438" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link5.dae" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link5_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.438" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link5_symp.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.003049665024221911 -0.0008866902457326625 0.043079803024980934" />
+      <mass value="0.6156588026168502" />
+      <inertia ixx="0.000423" ixy="-8e-06" ixz="6e-06" iyy="0.000445" iyz="-6e-06" izz="0.000324" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint5" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 -0.0315 0.0955" />
+    <parent link="openarm_left_link4" />
+    <child link="openarm_left_link5" />
+    <axis xyz="0 0 1" />
+    <limit effort="7" lower="-1.570796" upper="1.570796" velocity="20.943946" />
+  </joint>
+  <link name="openarm_left_link6">
+    <visual name="openarm_left_link6_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0375 -0.0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link6.dae" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_left_link6_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0375 -0.0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link6_symp.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.037136587005447405 -0.00033230528343419053 -9.498374522309838e-05" />
+      <mass value="0.475202773187987" />
+      <inertia ixx="0.000143" ixy="1e-06" ixz="1e-06" iyy="0.000157" iyz="1e-06" izz="0.000159" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint6" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0375 0.0 0.1205" />
+    <parent link="openarm_left_link5" />
+    <child link="openarm_left_link6" />
+    <axis xyz="1 0 0" />
+    <limit effort="7" lower="-0.785398" upper="0.785398" velocity="20.943946" />
+  </joint>
+  <link name="openarm_left_link7">
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="6.875510271106056e-05 -0.01266175250761268 0.06951945409987448" />
+      <mass value="0.4659771327380578" />
+      <inertia ixx="0.000639" ixy="1e-06" ixz="1e-06" iyy="0.000497" iyz="8.9e-05" izz="0.000342" />
+    </inertial>
+  </link>
+  <joint name="openarm_left_joint7" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.0375 0.0 0.0" />
+    <parent link="openarm_left_link6" />
+    <child link="openarm_left_link7" />
+    <axis xyz="0 -1 0" />
+    <limit effort="7" lower="-1.570796" upper="1.570796" velocity="20.943946" />
+  </joint>
+  <joint name="openarm_right_openarm_body_link0_joint" type="fixed">
+    <parent link="openarm_body_link0" />
+    <child link="openarm_right_link0" />
+    <origin rpy="1.5708 0 0" xyz="0.0 -0.031 0.698" />
+  </joint>
+  <link name="openarm_right_link0">
+    <visual name="openarm_right_link0_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link0.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link0_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link0_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0009483362816297526 0.0001580207020448382 0.03076860287587199" />
+      <mass value="1.1432284943239561" />
+      <inertia ixx="0.001128" ixy="-4e-06" ixz="-3.3e-05" iyy="0.000962" iyz="-7e-06" izz="0.00147" />
+    </inertial>
+  </link>
+  <link name="openarm_right_link1">
+    <visual name="openarm_right_link1_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 0.0 -0.0625" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link1.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link1_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 0.0 -0.0625" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link1_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0011467657911800769 3.319987657026362e-05 0.05395284380736254" />
+      <mass value="1.1416684646202298" />
+      <inertia ixx="0.001567" ixy="-1e-06" ixz="-2.9e-05" iyy="0.001273" iyz="1e-06" izz="0.001016" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint1" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.0625" />
+    <parent link="openarm_right_link0" />
+    <child link="openarm_right_link1" />
+    <axis xyz="0 0 1" />
+    <limit effort="40" lower="-1.396263" upper="3.490659" velocity="16.754666" />
+  </joint>
+  <link name="openarm_right_link2">
+    <visual name="openarm_right_link2_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0301 0.0 -0.1225" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link2.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link2_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0301 0.0 -0.1225" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link2_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="0.00839629182351943 -2.0145102027597523e-08 0.03256649300522363" />
+      <mass value="0.2775092746011571" />
+      <inertia ixx="0.000359" ixy="1e-06" ixz="-0.000109" iyy="0.000376" iyz="1e-06" izz="0.000232" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint2" type="revolute">
+    <origin rpy="1.57079632679 0 0" xyz="-0.0301 0.0 0.06" />
+    <parent link="openarm_right_link1" />
+    <child link="openarm_right_link2" />
+    <axis xyz="-1 0 0" />
+    <limit effort="40" lower="-0.17453267320510335" upper="3.3161253267948965" velocity="16.754666" />
+  </joint>
+  <link name="openarm_right_link3">
+    <visual name="openarm_right_link3_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.18875" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link3.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link3_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.18875" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link3_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.002104752099628911 0.0005549085042607548 0.09047470545721961" />
+      <mass value="1.073863338202347" />
+      <inertia ixx="0.004372" ixy="1e-06" ixz="1.1e-05" iyy="0.004319" iyz="-3.6e-05" izz="0.000661" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint3" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0301 0.0 0.06625" />
+    <parent link="openarm_right_link2" />
+    <child link="openarm_right_link3" />
+    <axis xyz="0 0 1" />
+    <limit effort="27" lower="-1.570796" upper="1.570796" velocity="5.445426" />
+  </joint>
+  <link name="openarm_right_link4">
+    <visual name="openarm_right_link4_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0315 -0.3425" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link4.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link4_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0315 -0.3425" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link4_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0029006831074562967 -0.03030575826634669 0.06339637422196209" />
+      <mass value="0.6348534566833373" />
+      <inertia ixx="0.000623" ixy="-1e-06" ixz="-1.9e-05" iyy="0.000511" iyz="3.8e-05" izz="0.000334" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint4" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.0 0.0315 0.15375" />
+    <parent link="openarm_right_link3" />
+    <child link="openarm_right_link4" />
+    <axis xyz="0 1 0" />
+    <limit effort="27" lower="0.0" upper="2.443461" velocity="5.445426" />
+  </joint>
+  <link name="openarm_right_link5">
+    <visual name="openarm_right_link5_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.438" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link5.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link5_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0 -0.0 -0.438" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link5_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.003049665024221911 0.0008866902457326625 0.043079803024980934" />
+      <mass value="0.6156588026168502" />
+      <inertia ixx="0.000423" ixy="-8e-06" ixz="6e-06" iyy="0.000445" iyz="-6e-06" izz="0.000324" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint5" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 -0.0315 0.0955" />
+    <parent link="openarm_right_link4" />
+    <child link="openarm_right_link5" />
+    <axis xyz="0 0 1" />
+    <limit effort="7" lower="-1.570796" upper="1.570796" velocity="20.943946" />
+  </joint>
+  <link name="openarm_right_link6">
+    <visual name="openarm_right_link6_visual">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0375 -0.0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link6.dae" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision name="openarm_right_link6_collision">
+      <origin rpy="0.0 0.0 0.0" xyz="-0.0375 -0.0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/collision/link6_symp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="-0.037136587005447405 0.00033230528343419053 -9.498374522309838e-05" />
+      <mass value="0.475202773187987" />
+      <inertia ixx="0.000143" ixy="1e-06" ixz="1e-06" iyy="0.000157" iyz="1e-06" izz="0.000159" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint6" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0375 0.0 0.1205" />
+    <parent link="openarm_right_link5" />
+    <child link="openarm_right_link6" />
+    <axis xyz="1 0 0" />
+    <limit effort="7" lower="-0.785398" upper="0.785398" velocity="20.943946" />
+  </joint>
+  <link name="openarm_right_link7">
+    <inertial>
+      <origin rpy="0.0 0.0 0.0" xyz="6.875510271106056e-05 0.01266175250761268 0.06951945409987448" />
+      <mass value="0.4659771327380578" />
+      <inertia ixx="0.000639" ixy="1e-06" ixz="1e-06" iyy="0.000497" iyz="8.9e-05" izz="0.000342" />
+    </inertial>
+  </link>
+  <joint name="openarm_right_joint7" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.0375 0.0 0.0" />
+    <parent link="openarm_right_link6" />
+    <child link="openarm_right_link7" />
+    <axis xyz="0 1 0" />
+    <limit effort="7" lower="-1.570796" upper="1.570796" velocity="20.943946" />
+  </joint>
+  <link name="openarm_left_gripper_mount" />
+  <joint name="mount_left_link7_to_gripper_mount" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_gripper_mount" />
+    <origin xyz="0 0 0.0595695" rpy="0 0 1.5707964" />
+  </joint>
+  <link name="openarm_right_gripper_mount" />
+  <joint name="mount_right_link7_to_gripper_mount" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_gripper_mount" />
+    <origin xyz="0 0.0000003 0.0595695" rpy="0 0 -1.5707964" />
+  </joint>
+  <material name="link7_part_mat0_007_c00_color">
+    <color rgba="0.90 0.12 0.12 1" />
+  </material>
+  <material name="link7_part_mat0_007_c01_color">
+    <color rgba="0.12 0.55 0.95 1" />
+  </material>
+  <material name="link7_part_mat0_007_c02_color">
+    <color rgba="0.10 0.72 0.30 1" />
+  </material>
+  <material name="link7_part_mat0_007_c03_color">
+    <color rgba="0.95 0.62 0.10 1" />
+  </material>
+  <material name="link7_part_mat0_007_c04_color">
+    <color rgba="0.58 0.25 0.90 1" />
+  </material>
+  <material name="link7_part_mat0_007_c05_color">
+    <color rgba="0.05 0.70 0.70 1" />
+  </material>
+  <material name="link7_part_mat0_007_c06_color">
+    <color rgba="0.85 0.25 0.55 1" />
+  </material>
+  <material name="link7_part_mat0_007_c07_color">
+    <color rgba="0.55 0.55 0.12 1" />
+  </material>
+  <material name="link7_part_mat0_007_c08_color">
+    <color rgba="0.30 0.30 0.95 1" />
+  </material>
+  <material name="link7_part_mat0_007_c09_color">
+    <color rgba="0.95 0.35 0.20 1" />
+  </material>
+  <material name="link7_part_mat0_007_c10_color">
+    <color rgba="0.20 0.75 0.55 1" />
+  </material>
+  <material name="link7_part_mat0_007_c11_color">
+    <color rgba="0.72 0.42 0.12 1" />
+  </material>
+  <material name="link7_part_mat0_007_c12_color">
+    <color rgba="0.90 0.12 0.12 1" />
+  </material>
+  <material name="link7_part_mat0_007_c13_color">
+    <color rgba="0.12 0.55 0.95 1" />
+  </material>
+  <material name="link7_part_mat0_007_c14_color">
+    <color rgba="0.10 0.72 0.30 1" />
+  </material>
+  <material name="link7_part_mat1_007_c00_color">
+    <color rgba="0.95 0.62 0.10 1" />
+  </material>
+  <material name="link7_part_mat1_007_c01_color">
+    <color rgba="0.58 0.25 0.90 1" />
+  </material>
+  <material name="link7_part_mat1_007_c02_color">
+    <color rgba="0.05 0.70 0.70 1" />
+  </material>
+  <material name="link7_part_mat1_007_c03_color">
+    <color rgba="0.85 0.25 0.55 1" />
+  </material>
+  <material name="link7_part_mat1_007_c04_color">
+    <color rgba="0.55 0.55 0.12 1" />
+  </material>
+  <material name="link7_part_mat1_007_c05_color">
+    <color rgba="0.30 0.30 0.95 1" />
+  </material>
+  <material name="link7_part_mat1_007_c06_color">
+    <color rgba="0.95 0.35 0.20 1" />
+  </material>
+  <material name="link7_part_mat1_007_c07_color">
+    <color rgba="0.20 0.75 0.55 1" />
+  </material>
+  <material name="link7_part_mat1_007_c08_color">
+    <color rgba="0.72 0.42 0.12 1" />
+  </material>
+  <material name="link7_part_mat1_007_c09_color">
+    <color rgba="0.90 0.12 0.12 1" />
+  </material>
+  <material name="link7_part_mat1_007_c10_color">
+    <color rgba="0.12 0.55 0.95 1" />
+  </material>
+  <material name="link7_part_mat1_007_c11_color">
+    <color rgba="0.10 0.72 0.30 1" />
+  </material>
+  <material name="link7_part_mat2_005_c00_color">
+    <color rgba="0.95 0.62 0.10 1" />
+  </material>
+  <material name="link7_part_mat2_005_c01_color">
+    <color rgba="0.58 0.25 0.90 1" />
+  </material>
+  <material name="link7_part_mat3_001_c00_color">
+    <color rgba="0.05 0.70 0.70 1" />
+  </material>
+  <material name="link7_part_mat3_001_c01_color">
+    <color rgba="0.85 0.25 0.55 1" />
+  </material>
+  <material name="link7_part_mat3_001_c02_color">
+    <color rgba="0.55 0.55 0.12 1" />
+  </material>
+  <material name="link7_part_mat3_001_c03_color">
+    <color rgba="0.30 0.30 0.95 1" />
+  </material>
+  <link name="openarm_left_link7_part_mat0_007_c00_2794tris">
+    <visual name="openarm_left_link7_part_mat0_007_c00_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_00_2794tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c00_2794tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c00_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c01_2794tris">
+    <visual name="openarm_left_link7_part_mat0_007_c01_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_01_2794tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c01_2794tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c01_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c02_2794tris">
+    <visual name="openarm_left_link7_part_mat0_007_c02_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_02_2794tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c02_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c02_2794tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c02_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c03_2794tris">
+    <visual name="openarm_left_link7_part_mat0_007_c03_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_03_2794tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c03_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c03_2794tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c03_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c04_2794tris">
+    <visual name="openarm_left_link7_part_mat0_007_c04_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_04_2794tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c04_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c04_2794tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c04_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c05_2794tris">
+    <visual name="openarm_left_link7_part_mat0_007_c05_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_05_2794tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c05_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c05_2794tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c05_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c06_756tris">
+    <visual name="openarm_left_link7_part_mat0_007_c06_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_06_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c06_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c06_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c06_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c07_756tris">
+    <visual name="openarm_left_link7_part_mat0_007_c07_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_07_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c07_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c07_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c07_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c08_756tris">
+    <visual name="openarm_left_link7_part_mat0_007_c08_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_08_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c08_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c08_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c08_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c09_148tris">
+    <visual name="openarm_left_link7_part_mat0_007_c09_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_09_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c09_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c09_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c09_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c10_148tris">
+    <visual name="openarm_left_link7_part_mat0_007_c10_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_10_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c10_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c10_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c10_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c11_148tris">
+    <visual name="openarm_left_link7_part_mat0_007_c11_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_11_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c11_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c11_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c11_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c12_124tris">
+    <visual name="openarm_left_link7_part_mat0_007_c12_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_12_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c12_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c12_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c12_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c13_124tris">
+    <visual name="openarm_left_link7_part_mat0_007_c13_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_13_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c13_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c13_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c13_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat0_007_c14_124tris">
+    <visual name="openarm_left_link7_part_mat0_007_c14_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_14_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c14_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat0_007_c14_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat0_007_c14_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c00_756tris">
+    <visual name="openarm_left_link7_part_mat1_007_c00_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_00_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c00_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c00_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c01_756tris">
+    <visual name="openarm_left_link7_part_mat1_007_c01_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_01_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c01_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c01_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c02_756tris">
+    <visual name="openarm_left_link7_part_mat1_007_c02_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_02_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c02_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c02_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c02_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c03_756tris">
+    <visual name="openarm_left_link7_part_mat1_007_c03_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_03_756tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c03_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c03_756tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c03_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c04_148tris">
+    <visual name="openarm_left_link7_part_mat1_007_c04_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_04_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c04_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c04_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c04_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c05_148tris">
+    <visual name="openarm_left_link7_part_mat1_007_c05_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_05_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c05_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c05_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c05_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c06_148tris">
+    <visual name="openarm_left_link7_part_mat1_007_c06_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_06_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c06_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c06_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c06_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c07_148tris">
+    <visual name="openarm_left_link7_part_mat1_007_c07_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_07_148tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c07_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c07_148tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c07_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c08_124tris">
+    <visual name="openarm_left_link7_part_mat1_007_c08_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_08_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c08_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c08_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c08_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c09_124tris">
+    <visual name="openarm_left_link7_part_mat1_007_c09_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_09_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c09_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c09_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c09_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c10_124tris">
+    <visual name="openarm_left_link7_part_mat1_007_c10_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_10_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c10_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c10_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c10_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat1_007_c11_124tris">
+    <visual name="openarm_left_link7_part_mat1_007_c11_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_11_124tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c11_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat1_007_c11_124tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat1_007_c11_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat2_005_c00_18808tris">
+    <visual name="openarm_left_link7_part_mat2_005_c00_18808tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat2_005_component_00_18808tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat2_005_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat2_005_c00_18808tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat2_005_c00_18808tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat2_005_c01_252tris">
+    <visual name="openarm_left_link7_part_mat2_005_c01_252tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat2_005_component_01_252tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat2_005_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat2_005_c01_252tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat2_005_c01_252tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat3_001_c00_38256tris">
+    <visual name="openarm_left_link7_part_mat3_001_c00_38256tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_00_38256tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat3_001_c00_38256tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat3_001_c00_38256tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat3_001_c01_11280tris">
+    <visual name="openarm_left_link7_part_mat3_001_c01_11280tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_01_11280tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat3_001_c01_11280tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat3_001_c01_11280tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat3_001_c02_7598tris">
+    <visual name="openarm_left_link7_part_mat3_001_c02_7598tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_02_7598tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c02_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat3_001_c02_7598tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat3_001_c02_7598tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_left_link7_part_mat3_001_c03_2140tris">
+    <visual name="openarm_left_link7_part_mat3_001_c03_2140tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_03_2140tris.stl" scale="0.001 -0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c03_color" />
+    </visual>
+  </link>
+  <joint name="openarm_left_link7_part_mat3_001_c03_2140tris_joint" type="fixed">
+    <parent link="openarm_left_link7" />
+    <child link="openarm_left_link7_part_mat3_001_c03_2140tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c00_2794tris">
+    <visual name="openarm_right_link7_part_mat0_007_c00_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_00_2794tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c00_2794tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c00_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c01_2794tris">
+    <visual name="openarm_right_link7_part_mat0_007_c01_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_01_2794tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c01_2794tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c01_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c02_2794tris">
+    <visual name="openarm_right_link7_part_mat0_007_c02_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_02_2794tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c02_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c02_2794tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c02_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c03_2794tris">
+    <visual name="openarm_right_link7_part_mat0_007_c03_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_03_2794tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c03_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c03_2794tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c03_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c04_2794tris">
+    <visual name="openarm_right_link7_part_mat0_007_c04_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_04_2794tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c04_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c04_2794tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c04_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c05_2794tris">
+    <visual name="openarm_right_link7_part_mat0_007_c05_2794tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_05_2794tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c05_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c05_2794tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c05_2794tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c06_756tris">
+    <visual name="openarm_right_link7_part_mat0_007_c06_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_06_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c06_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c06_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c06_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c07_756tris">
+    <visual name="openarm_right_link7_part_mat0_007_c07_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_07_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c07_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c07_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c07_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c08_756tris">
+    <visual name="openarm_right_link7_part_mat0_007_c08_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_08_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c08_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c08_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c08_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c09_148tris">
+    <visual name="openarm_right_link7_part_mat0_007_c09_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_09_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c09_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c09_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c09_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c10_148tris">
+    <visual name="openarm_right_link7_part_mat0_007_c10_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_10_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c10_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c10_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c10_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c11_148tris">
+    <visual name="openarm_right_link7_part_mat0_007_c11_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_11_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c11_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c11_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c11_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c12_124tris">
+    <visual name="openarm_right_link7_part_mat0_007_c12_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_12_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c12_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c12_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c12_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c13_124tris">
+    <visual name="openarm_right_link7_part_mat0_007_c13_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_13_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c13_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c13_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c13_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat0_007_c14_124tris">
+    <visual name="openarm_right_link7_part_mat0_007_c14_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat0_007_component_14_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat0_007_c14_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat0_007_c14_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat0_007_c14_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c00_756tris">
+    <visual name="openarm_right_link7_part_mat1_007_c00_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_00_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c00_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c00_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c01_756tris">
+    <visual name="openarm_right_link7_part_mat1_007_c01_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_01_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c01_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c01_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c02_756tris">
+    <visual name="openarm_right_link7_part_mat1_007_c02_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_02_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c02_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c02_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c02_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c03_756tris">
+    <visual name="openarm_right_link7_part_mat1_007_c03_756tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_03_756tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c03_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c03_756tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c03_756tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c04_148tris">
+    <visual name="openarm_right_link7_part_mat1_007_c04_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_04_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c04_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c04_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c04_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c05_148tris">
+    <visual name="openarm_right_link7_part_mat1_007_c05_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_05_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c05_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c05_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c05_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c06_148tris">
+    <visual name="openarm_right_link7_part_mat1_007_c06_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_06_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c06_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c06_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c06_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c07_148tris">
+    <visual name="openarm_right_link7_part_mat1_007_c07_148tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_07_148tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c07_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c07_148tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c07_148tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c08_124tris">
+    <visual name="openarm_right_link7_part_mat1_007_c08_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_08_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c08_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c08_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c08_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c09_124tris">
+    <visual name="openarm_right_link7_part_mat1_007_c09_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_09_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c09_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c09_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c09_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c10_124tris">
+    <visual name="openarm_right_link7_part_mat1_007_c10_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_10_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c10_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c10_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c10_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat1_007_c11_124tris">
+    <visual name="openarm_right_link7_part_mat1_007_c11_124tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat1_007_component_11_124tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat1_007_c11_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat1_007_c11_124tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat1_007_c11_124tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat2_005_c00_18808tris">
+    <visual name="openarm_right_link7_part_mat2_005_c00_18808tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat2_005_component_00_18808tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat2_005_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat2_005_c00_18808tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat2_005_c00_18808tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat2_005_c01_252tris">
+    <visual name="openarm_right_link7_part_mat2_005_c01_252tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat2_005_component_01_252tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat2_005_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat2_005_c01_252tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat2_005_c01_252tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat3_001_c00_38256tris">
+    <visual name="openarm_right_link7_part_mat3_001_c00_38256tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_00_38256tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c00_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat3_001_c00_38256tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat3_001_c00_38256tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat3_001_c01_11280tris">
+    <visual name="openarm_right_link7_part_mat3_001_c01_11280tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_01_11280tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c01_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat3_001_c01_11280tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat3_001_c01_11280tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat3_001_c02_7598tris">
+    <visual name="openarm_right_link7_part_mat3_001_c02_7598tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_02_7598tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c02_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat3_001_c02_7598tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat3_001_c02_7598tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+  <link name="openarm_right_link7_part_mat3_001_c03_2140tris">
+    <visual name="openarm_right_link7_part_mat3_001_c03_2140tris_visual">
+      <origin rpy="0 0 0" xyz="0 0 -0.5585" />
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_split_components/link7_mat3_001_component_03_2140tris.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="link7_part_mat3_001_c03_color" />
+    </visual>
+  </link>
+  <joint name="openarm_right_link7_part_mat3_001_c03_2140tris_joint" type="fixed">
+    <parent link="openarm_right_link7" />
+    <child link="openarm_right_link7_part_mat3_001_c03_2140tris" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+</robot>

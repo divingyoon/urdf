@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<robot name="gripper_left" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Simple left gripper placeholder as a single rigid body with a palm frame.
+       - Uses simple primitives for collision by default (robust for physics)
+       - Visual meshes can be pointed to your exported OBJ/DAE in "fusion scripts/urdf 추출/meshes"
+       - Exposed link names (consistent interface):
+           mount/base link:  ${prefix}gripper_left_base
+           palm link:        ${prefix}palm_link
+           palm COM frame:   ${prefix}palm_link_com
+  -->
+
+  <xacro:macro name="gripper_left" params="prefix:='' mesh_root:='fusion scripts/urdf 추출/meshes' use_mesh_visual:='false' mesh_filename:=''">
+
+    <!-- Base/mount body -->
+    <link name="${prefix}gripper_left_base">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.25"/>
+        <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0005"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0.015" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.10 0.07 0.03"/>
+        </geometry>
+        <material name="left_gripper_orange"><color rgba="0.95 0.45 0.1 1"/></material>
+      </visual>
+      <visual name="left_finger_outer">
+        <origin xyz="0 0.035 0.055" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.018 0.018 0.08"/>
+        </geometry>
+        <material name="left_gripper_dark"><color rgba="0.2 0.2 0.2 1"/></material>
+      </visual>
+      <visual name="right_finger_outer">
+        <origin xyz="0 -0.035 0.055" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.018 0.018 0.08"/>
+        </geometry>
+        <material name="left_gripper_dark"><color rgba="0.2 0.2 0.2 1"/></material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.08 0.06 0.02"/>
+        </geometry>
+      </collision>
+
+      <!-- Optional detailed visual from mesh -->
+      <xacro:if value="${use_mesh_visual}">
+        <visual name="mesh_visual">
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="${mesh_root}/${mesh_filename}" scale="1 1 1"/>
+          </geometry>
+        </visual>
+      </xacro:if>
+    </link>
+
+    <!-- Palm link: attach where fingertips converge; separate from base if needed -->
+    <link name="${prefix}palm_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.05"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.012"/>
+        </geometry>
+        <material name="left_gripper_blue"><color rgba="0.1 0.5 0.95 1"/></material>
+      </visual>
+    </link>
+
+    <joint name="${prefix}base_to_palm" type="fixed">
+      <parent link="${prefix}gripper_left_base"/>
+      <child  link="${prefix}palm_link"/>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Palm COM helper frame -->
+    <link name="${prefix}palm_link_com"/>
+    <joint name="${prefix}palm_link_to_com" type="fixed">
+      <parent link="${prefix}palm_link"/>
+      <child  link="${prefix}palm_link_com"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>

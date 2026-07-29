@@ -1,0 +1,81 @@
+#usda 1.0
+(
+    defaultPrim = "Head"
+    metersPerUnit = 1
+    upAxis = "Z"
+    doc = "openarm D435i pan/tilt head as a 2-DOF PhysX articulation. Three rigid links (base/mid/camera) referenced from per-link USDs (mesh + mass/inertia + convexDecomposition collision baked in). joint_pan (Z, XC330#1) and joint_tilt (Y, XC330#2) are the only moving axes. base is fixed to the world; re-parent it to the robot arm as needed. Angular joint limits are in DEGREES (UsdPhysics). Drive gains are placeholders — tune for your controller."
+)
+
+def Xform "Head" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+)
+{
+    # --- three rigid links (referenced), placed by the kinematic tree ---
+    def Xform "base" (prepend references = @./head_base.usda@)
+    {
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Xform "mid" (prepend references = @./head_mid.usda@)
+    {
+        double3 xformOp:translate = (0.0225, 0, 0.0385)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Xform "camera" (prepend references = @./head_camera.usda@)
+    {
+        double3 xformOp:translate = (0.0225, -0.0145, 0.066)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    # --- fix the base to the world (delete / retarget to mount on the arm) ---
+    def PhysicsFixedJoint "fix_base_to_world"
+    {
+        rel physics:body1 = </Head/base>
+        point3f physics:localPos0 = (0, 0, 0)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+    }
+
+    # --- PAN motor: XC330 #1 (Fusion axis -Z; USD "Z" -> sign flipped, symmetric range) ---
+    def PhysicsRevoluteJoint "joint_pan" (
+        prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+    )
+    {
+        rel physics:body0 = </Head/base>
+        rel physics:body1 = </Head/mid>
+        uniform token physics:axis = "Z"
+        float physics:lowerLimit = -90
+        float physics:upperLimit = 90
+        point3f physics:localPos0 = (0.0225, 0, 0.0385)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        uniform token drive:angular:physics:type = "force"
+        float drive:angular:physics:stiffness = 100.0
+        float drive:angular:physics:damping = 10.0
+        float drive:angular:physics:maxForce = 0.9
+        float drive:angular:physics:targetPosition = 0.0
+    }
+
+    # --- TILT motor: XC330 #2 (axis Y) ---
+    def PhysicsRevoluteJoint "joint_tilt" (
+        prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+    )
+    {
+        rel physics:body0 = </Head/mid>
+        rel physics:body1 = </Head/camera>
+        uniform token physics:axis = "Y"
+        float physics:lowerLimit = -90
+        float physics:upperLimit = 90
+        point3f physics:localPos0 = (0, -0.0145, 0.0275)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        uniform token drive:angular:physics:type = "force"
+        float drive:angular:physics:stiffness = 100.0
+        float drive:angular:physics:damping = 10.0
+        float drive:angular:physics:maxForce = 0.9
+        float drive:angular:physics:targetPosition = 0.0
+    }
+}

@@ -1,0 +1,92 @@
+# Portable physics configuration for the openarm D435i pan/tilt head.
+# 2-DOF articulation: everything except the two XC330 motor axes is merged into
+# rigid links. Values are baked into the .usda files; this file is the
+# human-readable source of truth. Source: Fusion 360 "head v5" (rl_ws/d435i).
+units:
+  length: meter            # USD metersPerUnit = 1
+  up_axis: Z
+  mesh_source_units: mm    # OBJ/STL in mm; USD points pre-scaled to m
+  angle_limits: degree     # UsdPhysics revolute limits are in DEGREES; URDF uses radians
+origin_convention: link_frame   # base=world origin; mid=pan-joint; camera=tilt-joint
+                                 # (URDF/USD share the same link frames; meshes baked link-local)
+
+# ------------------------------------------------------------------ links
+links:
+  base:                          # neck1 + neck2_r x2 + fpx330-s101 x2 + xc330#1 housing
+    usd: ../head_base.usda
+    prim: /Head/base
+    mass_kg: 0.109629
+    frame_world_m: [0.0, 0.0, 0.0]
+    center_of_mass_m: [0.003423, -0.000003, 0.003366]   # in link frame
+    diagonal_inertia: [4.381646e-05, 7.657038e-05, 8.818679e-05]
+    role: root (mounts to the arm / world)
+  mid:                           # fpx330-s102 + xc330#2 housing
+    usd: ../head_mid.usda
+    prim: /Head/mid
+    mass_kg: 0.017073
+    frame_world_m: [0.0225, 0.0, 0.0385]
+    center_of_mass_m: [-0.000004, 0.000202, 0.019222]
+    diagonal_inertia: [2.817369e-06, 2.429180e-06, 1.447213e-06]
+  camera:                        # fpx330-h101 + camera_fix + IntelRealsense D435i
+    usd: ../head_camera.usda
+    prim: /Head/camera
+    mass_kg: 0.065101
+    frame_world_m: [0.0225, -0.0145, 0.066]
+    center_of_mass_m: [-0.000717, 0.014670, 0.032665]
+    diagonal_inertia: [3.928919e-05, 1.017067e-05, 3.748699e-05]
+
+# ------------------------------------------------------------------ joints (the only DOF)
+joints:
+  pan:                           # XC330 #1
+    type: revolute
+    parent: base
+    child: mid
+    axis_urdf: [0, 0, -1]        # Fusion axis (radians, URDF)
+    axis_usd: Z                  # UsdPhysics token (+Z; sign flipped vs Fusion, symmetric range)
+    origin_in_parent_m: [0.0225, 0.0, 0.0385]
+    limit_rad: [-1.5708, 1.5708] # URDF  (PLACEHOLDER - set to your range)
+    limit_deg: [-90, 90]         # USD
+  tilt:                          # XC330 #2
+    type: revolute
+    parent: mid
+    child: camera
+    axis_urdf: [0, 1, 0]
+    axis_usd: Y
+    origin_in_parent_m: [0.0, -0.0145, 0.0275]
+    limit_rad: [-1.570796, 1.570796]  # from CAD (Fusion Revolute 10)
+    limit_deg: [-90, 90]
+
+# ------------------------------------------------------------------ actuator (XC330) defaults
+# PLACEHOLDERS — replace with your servo model/config. XC330-M288-T ~ 0.93 N*m stall.
+actuator:
+  model: ROBOTIS XC330 (Dynamixel)
+  effort_Nm: 0.9
+  velocity_rad_s: 6.0
+  drive:                         # USD PhysicsDriveAPI:angular (position control)
+    stiffness: 100.0
+    damping: 10.0
+    max_force_Nm: 0.9
+
+# ------------------------------------------------------------------ collision
+collision:
+  approximation: convexDecomposition   # solid links; NOT a container, so no SDF needed
+  contact_offset_m: 0.002
+  rest_offset_m: 0.0005
+  note: >
+    Collision meshes are dense (20k-31k tris). PhysX convex decomposition simplifies
+    them on load. Decimate the STL/OBJ if you want lighter assets.
+
+# ------------------------------------------------------------------ base attachment
+mount:
+  fixed_joint: fix_base_to_world       # in head.usda; base is welded to the world
+  note: >
+    To mount on the arm, delete fix_base_to_world (or retarget body0) and add a
+    fixed joint from the arm's end/tool link to /Head/base.
+
+# ------------------------------------------------------------------ reference dims
+geometry_reference:
+  camera: Intel RealSense D435i
+  total_height_m: 0.115           # base bottom (z=-0.02) to camera top (~0.115 world)
+  pan_axis_height_m: 0.0385
+  tilt_axis_height_m: 0.066
+  source_document: "rl_ws / d435i / head v5 (Fusion 360)"

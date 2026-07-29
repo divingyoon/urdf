@@ -1,0 +1,13 @@
+# ROS 2 build artifacts
+build/
+install/
+log/
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.pyc
+
+# Isaac Sim USD conversion outputs (>100MB, regenerable from URDF)
+generated/rl/*/configuration/

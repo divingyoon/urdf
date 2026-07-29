@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<robot name="link7_mat3_component_preview">
+  <link name="world"/>
+  <link name="link7_mat3_component_00">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat3_components/link7_mat3_component_00.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat3_component_00" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat3_component_00"/>
+    <origin xyz="-0.270 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="link7_mat3_component_01">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat3_components/link7_mat3_component_01.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat3_component_01" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat3_component_01"/>
+    <origin xyz="-0.090 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="link7_mat3_component_02">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat3_components/link7_mat3_component_02.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat3_component_02" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat3_component_02"/>
+    <origin xyz="0.090 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="link7_mat3_component_03">
+    <visual>
+      <geometry>
+        <mesh filename="file:///home/user/rl_ws/urdf/openarm_description/meshes/arm/v10/visual/link7_mat3_components/link7_mat3_component_03.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="world_to_link7_mat3_component_03" type="fixed">
+    <parent link="world"/>
+    <child link="link7_mat3_component_03"/>
+    <origin xyz="0.270 0 0" rpy="0 0 0"/>
+  </joint>
+</robot>

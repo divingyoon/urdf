@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<robot name="openarm_left_gripper_bimanual_real" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+    Real-hardware control description for:
+      - Left OpenArm arm with stock OpenArm gripper
+      - Right OpenArm arm without stock gripper
+
+    This description is for ros2_control / hardware bringup.
+    The right Tesollo hand is controlled by dg5f_driver as a separate hardware stack.
+  -->
+
+  <xacro:include filename="$(find openarm_description)/urdf/robot/openarm_robot.xacro"/>
+  <xacro:include filename="$(find openarm_description)/urdf/ee/openarm_hand.xacro"/>
+  <xacro:include filename="$(find openarm_description)/urdf/ee/openarm_hand_macro.xacro"/>
+
+  <!-- Compatibility args for upstream xacro that incorrectly uses $(eval hand/ee_type). -->
+  <xacro:arg name="hand" default="false"/>
+  <xacro:arg name="ee_type" default="none"/>
+
+  <xacro:arg name="left_can_interface" default="can1"/>
+  <xacro:arg name="right_can_interface" default="can0"/>
+  <xacro:arg name="use_fake_hardware" default="false"/>
+  <xacro:arg name="can_fd" default="true"/>
+
+  <!-- Left hand mount -->
+  <xacro:arg name="left_mount_xyz" default="0 0 0.1001"/>
+  <xacro:arg name="left_mount_rpy" default="0 0 0"/>
+  <xacro:arg name="left_tcp_xyz" default="0 0 0.08"/>
+  <xacro:arg name="left_tcp_rpy" default="0 0 0"/>
+
+  <xacro:property name="fake_hw" value="$(arg use_fake_hardware)"/>
+
+  <!-- Geometry only: dual OpenArm body, no built-in hands, no built-in ros2_control. -->
+  <xacro:openarm_robot
+    arm_type="v10"
+    body_type="v10"
+    joint_limits="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/joint_limits.yaml')}"
+    control_gains="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/control_gains.yaml')}"
+    inertials="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/inertials.yaml')}"
+    kinematics="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/kinematics.yaml')}"
+    kinematics_link="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/kinematics_link.yaml')}"
+    kinematics_offset="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/kinematics_offset.yaml')}"
+    body_inertials="${xacro.load_yaml('$(find openarm_description)/config/body/v10/inertials.yaml')}"
+    body_kinematics="${xacro.load_yaml('$(find openarm_description)/config/body/v10/kinematics.yaml')}"
+    body_kinematics_link="${xacro.load_yaml('$(find openarm_description)/config/body/v10/kinematics.yaml')}"
+    ee_kinematics_link="${xacro.load_yaml('$(find openarm_description)/config/hand/openarm_hand/kinematics_link.yaml')}"
+    hand="false"
+    ee_type="none"
+    ros2_control="false"
+    can_interface="can0"
+    left_can_interface="$(arg left_can_interface)"
+    right_can_interface="$(arg right_can_interface)"
+    left_arm_prefix="left_"
+    right_arm_prefix="right_"
+    use_fake_hardware="$(arg use_fake_hardware)"
+    fake_sensor_commands="false"
+    no_prefix="false"
+    arm_prefix=""
+    body_prefix=""
+    arm_connected_to="base"
+    body_connected_to="world"
+    bimanual="true"
+    right_arm_base_xyz="0.0 -0.031 0.698"
+    left_arm_base_xyz="0.0 0.031 0.698"
+    right_arm_base_rpy="1.5708 0 0"
+    left_arm_base_rpy="-1.5708 0 0"
+    can_fd="$(arg can_fd)"
+  />
+
+  <!-- Left hardware gripper only -->
+  <xacro:openarm_hand
+    connected_to="openarm_left_link7"
+    arm_type="v10"
+    arm_prefix="left_"
+    ee_type="openarm_hand"
+    ee_kinematics_link="${xacro.load_yaml('$(find openarm_description)/config/hand/openarm_hand/kinematics_link.yaml')}"
+    ee_inertials="${xacro.load_yaml('$(find openarm_description)/config/hand/openarm_hand/inertials.yaml')}"
+    xyz_ee="$(arg left_mount_xyz)"
+    rpy_ee="$(arg left_mount_rpy)"
+    tcp_xyz="$(arg left_tcp_xyz)"
+    tcp_rpy="$(arg left_tcp_rpy)"
+    description_pkg="openarm_description"
+  />
+
+  <!-- Custom ros2_control layout: left arm has gripper, right arm does not. -->
+  <xacro:property name="control_gains" value="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/control_gains.yaml')}"/>
+
+  <xacro:macro name="configure_joint" params="joint_name initial_position">
+    <joint name="${joint_name}">
+      <command_interface name="position"/>
+      <command_interface name="velocity"/>
+      <command_interface name="effort"/>
+
+      <state_interface name="position">
+        <param name="initial_value">${initial_position}</param>
+      </state_interface>
+      <state_interface name="velocity">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="effort">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+    </joint>
+  </xacro:macro>
+
+  <ros2_control name="openarm_left_hardware_interface" type="system">
+    <hardware>
+      <param name="arm_type">v10</param>
+      <xacro:if value="${fake_hw}">
+        <plugin>mock_components/GenericSystem</plugin>
+        <param name="fake_sensor_commands">false</param>
+        <param name="state_following_offset">0.0</param>
+      </xacro:if>
+      <xacro:unless value="${fake_hw}">
+        <plugin>openarm_hardware/OpenArm_v10HW</plugin>
+        <param name="can_interface">$(arg left_can_interface)</param>
+        <param name="arm_prefix">left_</param>
+        <param name="hand">true</param>
+        <param name="can_fd">$(arg can_fd)</param>
+        <param name="kp1">${control_gains['joint1']['kp']}</param>
+        <param name="kp2">${control_gains['joint2']['kp']}</param>
+        <param name="kp3">${control_gains['joint3']['kp']}</param>
+        <param name="kp4">${control_gains['joint4']['kp']}</param>
+        <param name="kp5">${control_gains['joint5']['kp']}</param>
+        <param name="kp6">${control_gains['joint6']['kp']}</param>
+        <param name="kp7">${control_gains['joint7']['kp']}</param>
+        <param name="kd1">${control_gains['joint1']['kd']}</param>
+        <param name="kd2">${control_gains['joint2']['kd']}</param>
+        <param name="kd3">${control_gains['joint3']['kd']}</param>
+        <param name="kd4">${control_gains['joint4']['kd']}</param>
+        <param name="kd5">${control_gains['joint5']['kd']}</param>
+        <param name="kd6">${control_gains['joint6']['kd']}</param>
+        <param name="kd7">${control_gains['joint7']['kd']}</param>
+      </xacro:unless>
+    </hardware>
+
+    <xacro:configure_joint joint_name="openarm_left_joint1" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_joint2" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_joint3" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_joint4" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_joint5" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_joint6" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_joint7" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_left_finger_joint1" initial_position="0.0"/>
+  </ros2_control>
+
+  <ros2_control name="openarm_right_hardware_interface" type="system">
+    <hardware>
+      <param name="arm_type">v10</param>
+      <xacro:if value="${fake_hw}">
+        <plugin>mock_components/GenericSystem</plugin>
+        <param name="fake_sensor_commands">false</param>
+        <param name="state_following_offset">0.0</param>
+      </xacro:if>
+      <xacro:unless value="${fake_hw}">
+        <plugin>openarm_hardware/OpenArm_v10HW</plugin>
+        <param name="can_interface">$(arg right_can_interface)</param>
+        <param name="arm_prefix">right_</param>
+        <param name="hand">false</param>
+        <param name="can_fd">$(arg can_fd)</param>
+        <param name="kp1">${control_gains['joint1']['kp']}</param>
+        <param name="kp2">${control_gains['joint2']['kp']}</param>
+        <param name="kp3">${control_gains['joint3']['kp']}</param>
+        <param name="kp4">${control_gains['joint4']['kp']}</param>
+        <param name="kp5">${control_gains['joint5']['kp']}</param>
+        <param name="kp6">${control_gains['joint6']['kp']}</param>
+        <param name="kp7">${control_gains['joint7']['kp']}</param>
+        <param name="kd1">${control_gains['joint1']['kd']}</param>
+        <param name="kd2">${control_gains['joint2']['kd']}</param>
+        <param name="kd3">${control_gains['joint3']['kd']}</param>
+        <param name="kd4">${control_gains['joint4']['kd']}</param>
+        <param name="kd5">${control_gains['joint5']['kd']}</param>
+        <param name="kd6">${control_gains['joint6']['kd']}</param>
+        <param name="kd7">${control_gains['joint7']['kd']}</param>
+      </xacro:unless>
+    </hardware>
+
+    <xacro:configure_joint joint_name="openarm_right_joint1" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_right_joint2" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_right_joint3" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_right_joint4" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_right_joint5" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_right_joint6" initial_position="0.0"/>
+    <xacro:configure_joint joint_name="openarm_right_joint7" initial_position="0.0"/>
+  </ros2_control>
+
+</robot>
