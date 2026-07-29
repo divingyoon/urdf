@@ -8,6 +8,3 @@ log/
 .ruff_cache/
 __pycache__/
 *.pyc
-
-# Isaac Sim USD conversion outputs (>100MB, regenerable from URDF)
-generated/rl/*/configuration/
