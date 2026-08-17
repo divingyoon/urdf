@@ -156,3 +156,39 @@ def test_head_mesh_paths_resolve(name: str) -> None:
             filename = mesh.attrib["filename"]
             assert filename.startswith("file://")
             assert Path(filename[len("file://") :]).is_file()
+
+
+STOCK_LINK7_MESHES = {"link7.dae", "link7_symp.stl"}
+TESOLLO_NAMES = [name for name in RL_NAMES if "tesollo" in name]
+
+
+@pytest.mark.parametrize("name", RL_NAMES)
+def test_arm_link7_has_no_stock_gripper_motor_mesh(name: str) -> None:
+    """A link7 carrying a replacement hand must use the cropped mesh: the
+    stock mesh includes the removed stock-gripper motor section that collides
+    with the hand adapter. A link7 with the stock gripper keeps the stock mesh."""
+    root = load_urdf(name)
+    hand_links = gen.hand_mount_parent_links(root)
+    assert hand_links, name
+    for link in root.findall("link"):
+        if link.attrib["name"] not in hand_links or link.attrib["name"] not in {"r_al_7", "l_al_7"}:
+            continue
+        meshes = [m.attrib["filename"].rsplit("/", 1)[-1] for m in link.iter("mesh")]
+        assert meshes, link.attrib["name"]
+        for base in meshes:
+            assert base not in STOCK_LINK7_MESHES, (name, link.attrib["name"], base)
+            kind = "visual" if base.endswith(".dae") else "collision"
+            mesh_path = gen.ASSET_ROOTS["openarm_description"] / "meshes" / "arm" / "v10" / kind / base
+            assert mesh_path.is_file(), mesh_path
+
+
+@pytest.mark.parametrize("name", TESOLLO_NAMES)
+def test_tesollo_mount_flush_on_link7_flange(name: str) -> None:
+    """The hand mount must sit on the link7 flange plane (cropped mesh top),
+    with no gap left by the removed stock-gripper motor section."""
+    joints = joints_by_name(load_urdf(name))
+    mounts = [j for j in ("r_hj_mount", "l_hj_mount") if j in joints]
+    assert mounts, name
+    for joint_name in mounts:
+        _, _, z = origin_xyz(joints[joint_name])
+        assert abs(z - gen.LINK7_FLANGE_Z) < 1e-9, (name, joint_name, z)

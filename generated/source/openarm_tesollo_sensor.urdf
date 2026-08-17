@@ -1308,6 +1308,6 @@
   <joint name="mount_right_link7_to_tesollo" type="fixed">
     <parent link="openarm_right_link7"/>
     <child link="right_base_link"/>
-    <origin rpy="0 0 -1.5707964" xyz="0 0.0000003 0.0595695"/>
+    <origin rpy="0 0 -1.5707964" xyz="0 0.0000003 0.0495"/>
   </joint>
 </robot>

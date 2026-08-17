@@ -24,9 +24,9 @@
   <xacro:arg name="ee_type" default="none"/>
 
   <!-- Mount transforms -->
-  <xacro:arg name="left_mount_xyz" default="0 0 0.0595695"/>
+  <xacro:arg name="left_mount_xyz" default="0 0 0.0495"/>
   <xacro:arg name="left_mount_rpy" default="0 0 1.5707964"/>
-  <xacro:arg name="right_mount_xyz" default="0 0.0000003 0.0595695"/>
+  <xacro:arg name="right_mount_xyz" default="0 0.0000003 0.0495"/>
   <xacro:arg name="right_mount_rpy" default="0 0 -1.5707964"/>
 
   <!-- Optional: upstream Tesollo xacro paths -->

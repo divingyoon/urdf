@@ -25,6 +25,7 @@ OUT_DIR = ROOT / "generated" / "rl"
 ASSET_ROOTS = {
     "openarm_description": ROOT / "vendor" / "openarm_description",
     "dg_description": ROOT / "vendor" / "delto_m_ros2" / "dg_description",
+    "tesollo_model": ROOT / "vendor" / "tesollo_model",
     "RH56F1": ROOT / "vendor" / "RH56F1",
 }
 
@@ -32,6 +33,19 @@ ASSET_ROOTS = {
 # origin (origin = plate top). Everything defined in the vendor frame moves
 # down by this amount; cropped meshes from crop_body_plate.py are pre-shifted.
 BASE_LIFT_M = 0.008
+
+# The stock link7 meshes include the stock-gripper motor section that is
+# physically removed when a hand replaces the stock gripper, so RL assets swap
+# them for the pre-cropped variants. The hand mount then sits on the exposed
+# flange plate plane (z=0.0495, the large flat surface); the flange bolts
+# protrude 4mm further (to z=0.0535, the cropped mesh top) and insert into the
+# adapter plate holes, so they are NOT the mounting plane.
+STOCK_LINK7_MESH_SWAP = {
+    "link7.dae": "link7_without_mat2_mat3_components00_03.dae",
+    "link7_symp.stl": "link7_without_mat2_mat3_components00_03.stl",
+}
+ARM_FLANGE_LINKS = {"r_al_7", "l_al_7"}
+LINK7_FLANGE_Z = 0.0495
 
 HEAD_DIR = ROOT / "vendor" / "head_realsense_d435i"
 HEAD_URDF = HEAD_DIR / "urdf" / "head.urdf"
@@ -61,6 +75,7 @@ SOURCES = OrderedDict(
     [
         ("openarm_tesollo_sensor", ROOT / "generated" / "source" / "openarm_tesollo_sensor.urdf"),
         ("openarm_tesollo_bi", ROOT / "generated" / "source" / "openarm_tesollo_bi.urdf"),
+        ("openarm_tesollo_bi_s", ROOT / "generated" / "source" / "openarm_tesollo_bi_s.urdf"),
         ("openarm_bi_rh56f1", ROOT / "generated" / "source" / "openarm_bi_rh56f1.urdf"),
     ]
 )
@@ -119,6 +134,37 @@ def normalize_mesh_uri(uri: str) -> str:
     if asset_root is None or not relpath:
         return uri
     return f"file://{(asset_root / relpath).resolve()}"
+
+
+def hand_mount_parent_links(root: ET.Element) -> set[str]:
+    """Arm links that carry a replacement hand (parent of a ``*_hj_mount`` joint)."""
+    parents: set[str] = set()
+    for joint in root.findall("joint"):
+        name = joint.get("name") or ""
+        parent = joint.find("parent")
+        if name.endswith("_hj_mount") and parent is not None:
+            parents.add(parent.get("link") or "")
+    return parents
+
+
+def strip_stock_gripper_motor(root: ET.Element) -> None:
+    """Swap link7 meshes for the cropped variants without the stock-gripper motor.
+
+    Only applies to link7s that carry a replacement hand mount; a link7 with
+    the stock gripper attached keeps the stock mesh (the motor is present).
+    """
+    swap_links = ARM_FLANGE_LINKS & hand_mount_parent_links(root)
+    for link in root.findall("link"):
+        if link.get("name") not in swap_links:
+            continue
+        for mesh in link.iter("mesh"):
+            uri = mesh.get("filename")
+            if not uri:
+                continue
+            head, sep, base = uri.rpartition("/")
+            replacement = STOCK_LINK7_MESH_SWAP.get(base)
+            if replacement:
+                mesh.set("filename", f"{head}{sep}{replacement}")
 
 
 def build_openarm_maps(link_names: set[str], joint_names: set[str]) -> tuple[dict[str, str], dict[str, str]]:
@@ -700,6 +746,7 @@ def generate_one(name: str, source_path: Path) -> tuple[Path, Path]:
     )
 
     rename_tree(root, link_map, joint_map)
+    strip_stock_gripper_motor(root)
     apply_base_origin_fix(root, ensure_cropped_meshes())
     head_link_map, head_joint_map = attach_head(root)
     link_map, joint_map = merge_maps((link_map, joint_map), (head_link_map, head_joint_map))

@@ -157,13 +157,13 @@
     <visual name="openarm_right_link7_visual">
       <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0 -0.5585" />
       <geometry>
-        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/visual/link7.dae" scale="0.001 0.001 0.001" />
+        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/visual/link7_without_mat2_mat3_components00_03.dae" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
     <collision name="openarm_right_link7_collision">
       <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0 -0.5585" />
       <geometry>
-        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/collision/link7_symp.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/collision/link7_without_mat2_mat3_components00_03.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     <inertial>
@@ -318,7 +318,7 @@
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/visual/rl_dg_1_tip.dae" />
       </geometry>
     </visual>
-    <collision>
+    <collision name="rl_dg_1_tip_c">
       <origin rpy="0 0 0" xyz="0 0 0" />
       <geometry>
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/collision/rl_dg_1_tip_c.STL" />
@@ -413,7 +413,7 @@
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/visual/rl_dg_2_tip.dae" />
       </geometry>
     </visual>
-    <collision>
+    <collision name="rl_dg_2_tip_c">
       <origin rpy="0 0 0" xyz="0 0 0" />
       <geometry>
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/collision/rl_dg_2_tip_c.STL" />
@@ -508,7 +508,7 @@
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/visual/rl_dg_3_tip.dae" />
       </geometry>
     </visual>
-    <collision>
+    <collision name="rl_dg_3_tip_c">
       <origin rpy="0 0 0" xyz="0 0 0" />
       <geometry>
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/collision/rl_dg_3_tip_c.STL" />
@@ -603,7 +603,7 @@
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/visual/rl_dg_4_tip.dae" />
       </geometry>
     </visual>
-    <collision>
+    <collision name="rl_dg_4_tip_c">
       <origin rpy="0 0 0" xyz="0 0 0" />
       <geometry>
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/collision/rl_dg_4_tip_c.STL" />
@@ -698,7 +698,7 @@
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/visual/rl_dg_5_tip.dae" />
       </geometry>
     </visual>
-    <collision>
+    <collision name="rl_dg_5_tip_c">
       <origin rpy="0 0 0" xyz="0 0 0" />
       <geometry>
         <mesh filename="file:///home/user/rl_ws/urdf/install/dg_description/share/dg_description/meshes/dg5f_right/collision/rl_dg_5_tip_c.STL" />
@@ -842,13 +842,13 @@
     <visual name="openarm_left_link7_visual">
       <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0 -0.5585" />
       <geometry>
-        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/visual/link7.dae" scale="0.001 -0.001 0.001" />
+        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/visual/link7_without_mat2_mat3_components00_03.dae" scale="0.001 -0.001 0.001" />
       </geometry>
     </visual>
     <collision name="openarm_left_link7_collision">
       <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0 -0.5585" />
       <geometry>
-        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/collision/link7_symp.stl" scale="0.001 -0.001 0.001" />
+        <mesh filename="file:///home/user/rl_ws/urdf/vendor/openarm_description/meshes/arm/v10/collision/link7_without_mat2_mat3_components00_03.stl" scale="0.001 -0.001 0.001" />
       </geometry>
     </collision>
     <inertial>
@@ -1510,7 +1510,7 @@
   <joint name="r_hj_mount" type="fixed">
     <parent link="r_al_7" />
     <child link="r_hl_mount" />
-    <origin rpy="0 0 -1.5707964" xyz="0 0.0000003 0.0595695" />
+    <origin rpy="0 0 -1.5707964" xyz="0 0.0000003 0.0495" />
   </joint>
   <joint name="r_hj_adapter" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0" />
@@ -1759,7 +1759,7 @@
   <joint name="l_hj_mount" type="fixed">
     <parent link="l_al_7" />
     <child link="l_hl_mount" />
-    <origin rpy="0 0 1.5707964" xyz="0 0 0.0595695" />
+    <origin rpy="0 0 1.5707964" xyz="0 0 0.0495" />
   </joint>
   <joint name="l_hj_adapter" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0" />
