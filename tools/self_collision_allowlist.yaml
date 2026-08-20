@@ -1,0 +1,51 @@
+# Known hull-only self-collision findings (raw meshes are clear).
+#
+# These pairs penetrate ONLY under a plain convex-hull collision approximation,
+# which fills concave pockets. They are safe when the USD is imported with
+# collider_type "convex_decomposition" (tools/build_usd.py enforces this).
+# Any pair NOT listed here fails the audit -> fix the asset, don't extend the
+# list casually.
+requires_collision_approximation: convexDecomposition
+pairs:
+  - links: ["*_hl_palm", "*_hl_thumb_2"]
+    reason: >-
+      Convex hull fills the palm's thumb pocket; raw meshes have 2.8mm
+      clearance at zero pose.
+  - links: ["*_al_5", "*_al_7"]
+    reason: >-
+      Convex hulls round the forearm shells; raw meshes have 19mm clearance
+      at zero pose.
+  # --- RH56F1 -------------------------------------------------------------
+  # The vendor collision meshes were unrepairably non-watertight, so the
+  # generator replaces the finger-chain collisions with fitted primitives
+  # (inscribed cylinders / AABB boxes; palm_1 cover collision dropped). That
+  # made the geometry measurable, and the measurement shows the hand's nested
+  # shell design GENUINELY overlaps at rest inside each finger (sensor/tip
+  # pads wrap across the knuckle, thumb links nest, 0.7~9.4mm). These pairs
+  # are accepted (`accept_raw`), which means: the RH56F1 asset must run with
+  # `enabled_self_collisions=False`, or these pairs must be filtered at the
+  # env level. Do NOT add accept_raw entries for the tesollo assets.
+  - links: ["*_hl_index_1", "*_hl_index_[st]*"]
+    accept_raw: true
+    reason: RH56F1 sensor/tip pads wrap across the knuckle over segment 1 by design.
+  - links: ["*_hl_middle_1", "*_hl_middle_[st]*"]
+    accept_raw: true
+    reason: RH56F1 sensor/tip pads wrap across the knuckle over segment 1 by design.
+  - links: ["*_hl_ring_1", "*_hl_ring_[st]*"]
+    accept_raw: true
+    reason: RH56F1 sensor/tip pads wrap across the knuckle over segment 1 by design.
+  - links: ["*_hl_pinky_1", "*_hl_pinky_[st]*"]
+    accept_raw: true
+    reason: RH56F1 sensor/tip pads wrap across the knuckle over segment 1 by design.
+  - links: ["*_hl_*_sensor", "*_hl_*_tip"]
+    accept_raw: true
+    reason: RH56F1 sibling pads on the same distal segment abut each other by design.
+  - links: ["*_hl_thumb_2", "*_hl_thumb_*"]
+    accept_raw: true
+    reason: RH56F1 thumb links nest inside each other by design.
+  - links: ["*_hl_thumb_3", "*_hl_thumb_[st]*"]
+    accept_raw: true
+    reason: RH56F1 thumb pads wrap across the knuckle by design.
+  - links: ["*_hl_palm_2", "*_hl_thumb_2"]
+    accept_raw: true
+    reason: RH56F1 thumb root nests into the palm shell by design.

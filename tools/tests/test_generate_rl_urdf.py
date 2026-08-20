@@ -19,7 +19,9 @@ RL_NAMES = list(gen.SOURCES.keys())
 
 @pytest.fixture(scope="session", autouse=True)
 def generated_outputs() -> None:
-    assert gen.main([]) == 0
+    # The audit is exercised separately in test_audit_self_collision.py;
+    # skipping it here keeps the rest of the suite fast.
+    assert gen.main(["--skip-audit"]) == 0
 
 
 def load_urdf(name: str) -> ET.Element:
@@ -158,28 +160,56 @@ def test_head_mesh_paths_resolve(name: str) -> None:
             assert Path(filename[len("file://") :]).is_file()
 
 
-STOCK_LINK7_MESHES = {"link7.dae", "link7_symp.stl"}
 TESOLLO_NAMES = [name for name in RL_NAMES if "tesollo" in name]
 
 
 @pytest.mark.parametrize("name", RL_NAMES)
-def test_arm_link7_has_no_stock_gripper_motor_mesh(name: str) -> None:
-    """A link7 carrying a replacement hand must use the cropped mesh: the
-    stock mesh includes the removed stock-gripper motor section that collides
-    with the hand adapter. A link7 with the stock gripper keeps the stock mesh."""
+def test_arm_link7_meshes_support_hand_mount(name: str) -> None:
+    """A link7 carrying a replacement hand must use the cropped visual mesh
+    (stock-gripper motor removed) and the bolt-free flange-cut collision mesh
+    (bolts insert into the adapter; kept in collision they would penetrate it
+    under self-collision). A link7 with the stock gripper keeps stock meshes."""
     root = load_urdf(name)
     hand_links = gen.hand_mount_parent_links(root)
     assert hand_links, name
     for link in root.findall("link"):
         if link.attrib["name"] not in hand_links or link.attrib["name"] not in {"r_al_7", "l_al_7"}:
             continue
-        meshes = [m.attrib["filename"].rsplit("/", 1)[-1] for m in link.iter("mesh")]
-        assert meshes, link.attrib["name"]
-        for base in meshes:
-            assert base not in STOCK_LINK7_MESHES, (name, link.attrib["name"], base)
-            kind = "visual" if base.endswith(".dae") else "collision"
-            mesh_path = gen.ASSET_ROOTS["openarm_description"] / "meshes" / "arm" / "v10" / kind / base
-            assert mesh_path.is_file(), mesh_path
+        visual_meshes = [
+            m.attrib["filename"].rsplit("/", 1)[-1]
+            for v in link.findall("visual")
+            for m in v.iter("mesh")
+        ]
+        assert visual_meshes == ["link7_without_mat2_mat3_components00_03.dae"], (name, visual_meshes)
+        collision = [
+            m.attrib["filename"]
+            for c in link.findall("collision")
+            for m in c.iter("mesh")
+        ]
+        assert len(collision) == 1, (name, collision)
+        assert collision[0].rsplit("/", 1)[-1] == "link7_flange_cut.stl", collision[0]
+        assert Path(collision[0].removeprefix("file://")).is_file(), collision[0]
+
+
+def test_link7_flange_collision_has_no_bolts() -> None:
+    """The flange-cut collision mesh must end at the flange plate plane."""
+    import crop_link7_flange as clf
+
+    _, zmax_raw = stl_z_range(clf.OUTPUT)
+    assert zmax_raw <= clf.FLANGE_TOP_RAW_MM + 1e-3
+    assert abs(zmax_raw * 0.001 - 0.5585 - gen.LINK7_FLANGE_Z) < 1e-4
+
+
+@pytest.mark.parametrize("name", TESOLLO_NAMES)
+def test_adapter_plate_has_no_collision(name: str) -> None:
+    """The adapter plate is fully enclosed (flange below, hand mount above);
+    its collision geometry only produces resting-pose self-collision contacts."""
+    root = load_urdf(name)
+    for link in root.findall("link"):
+        if not link.attrib["name"].endswith("_hl_adapter"):
+            continue
+        assert link.findall("visual"), link.attrib["name"]
+        assert not link.findall("collision"), link.attrib["name"]
 
 
 @pytest.mark.parametrize("name", TESOLLO_NAMES)

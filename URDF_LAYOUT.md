@@ -66,6 +66,62 @@ flange bolts protrude to z=0.0535 and insert into the adapter plate holes, so
 the cropped-mesh top is NOT the mounting plane. RH56F1 keeps its own mount
 offset (no dedicated adapter mesh).
 
+self-collision note: the RL assets are safe for articulation self-collision
+(`enabled_self_collisions=True`). Two resting-pose penetrations existed and
+are removed by the generator: the hand-mounted link7 *collision* uses the
+bolt-free `generated/rl/meshes/link7_flange_cut.stl` (visual keeps the bolts),
+and the enclosed `*_hl_adapter` plate has visual-only geometry.
+`tools/audit_self_collision.py` enforces this permanently: it reproduces the
+PhysX pairing rule (non-adjacent pairs only) at zero pose and FAILs the
+generator on any raw-mesh penetration; hull-only findings (safe with
+convexDecomposition import) WARN, documented in
+`tools/self_collision_allowlist.yaml`. The manifest records the requirement
+as `requires_collision_approximation: convex_decomposition`.
+
+Filtered pairs: the audit exports its WARN pairs whose raw clearance is
+within convex-decomposition cooking inflation (<5mm; measured: a 2.8mm
+palm-thumb pocket clearance produced ~4kN phantom contacts) into the manifest
+(`self_collision_filtered_pairs`), and `tools/build_usd.py` authors them as
+PhysX `PhysicsFilteredPairsAPI` on the merged bodies. Everything else keeps
+full self-collision. Zero-action probes (`tools/probe_zero_action.py`, one
+robot per process) confirm all four assets hold <1e-5 rad drift over 200
+steps with `enabled_self_collisions=True`.
+
+RH56F1 note: its vendor collision meshes were unrepairably non-watertight, so
+the generator replaces the finger-chain collisions with fitted primitives
+(inscribed cylinders / AABB boxes; the palm_1 cover's collision is dropped -
+palm_2/3 envelop it). The nested-shell finger design GENUINELY overlaps at
+rest (pads wrap across the knuckles, 0.7~9.4mm); those pairs are `accept_raw`
+allowlisted and collision-filtered in the built USD, so even RH56F1 is
+self-collision safe as built.
+
+Probe caveat: never spawn two articulations of the same instanceable USD with
+different articulation flags in one stage - PhysX aliases their shapes and
+fabricates enormous ghost contacts (measured 1e11 N across a 3m gap). The
+training cloner replicates identical flags, so this only bites hand-written
+probes.
+
+USD build: `IsaacLab/isaaclab.sh -p tools/build_usd.py [asset...] [--sync-hdgp]`
+replaces the manual GUI import. Settings are pinned (collider_type
+convex_decomposition, merge_fixed_joints, fix_base; runtime cfg decides
+`enabled_self_collisions`); the importer emits the same layered structure as
+the GUI (`<asset>.usd` + `configuration/*.usd`), and the build verifies the
+manifest joint contract plus collider approximation. Each
+`generated/rl/<asset>/` directory is a self-contained bundle: the USD layer
+stack plus the exact `.urdf` and `_manifest.yaml` it was built from
+(`--sync-hdgp` mirrors the whole bundle to `hdgp/assets/robot/<asset>/`). Caveat: the urdf importer
+extension version is pinned in `IsaacLab/apps/isaaclab.python.kit`
+(isaacsim.asset.importer.urdf 2.4.31) — changing it can change output.
+
+Fabrics URDFs: `python3 tools/gen_fabric_urdfs.py [variant...] [--sync-hdgp]`
+generates the Fabrics IK URDFs (openarm_tesollo_bi_s, openarm_tesollo_bi_s_left,
+openarm_tesollo_sensor_left_gripper, openarm_rh56f1) into `generated/fabric/`
+from the RL URDFs, replacing the four ad-hoc hdgp generators. Structural
+templates (fabric-only helper/sphere frames) live in `eef/fabric_templates/`;
+all kinematics are re-derived and FK-gated (palm+fingertips) against the RL
+URDF. The legacy hdgp fabric dirs (openarm_tesollo, _left, _sensor) are
+intentionally frozen for old pour consumers — never regenerate them.
+
 ## Preview / Scratch URDFs
 
 - `previews/link7_material_preview.urdf`

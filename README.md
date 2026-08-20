@@ -373,8 +373,16 @@ And always load the matching manifest:
 3. Create a composition xacro under `assemblies/`.
 4. Generate or save the stable source URDF under `generated/source/`.
 5. Add a source entry and mapping rules to `tools/generate_rl_urdf.py`.
-6. Run the generator.
+6. Run the generator (`python3 tools/generate_rl_urdf.py`). It also runs the
+   self-collision audit (`tools/audit_self_collision.py`) - a FAIL means the
+   asset interpenetrates at rest and must be fixed, not skipped.
 7. Verify the new manifest's `control_joint_order` matches the desired action vector.
+8. Build the USD headlessly (no GUI import):
+   `/home/user/rl_ws/IsaacLab/isaaclab.sh -p tools/build_usd.py <asset> [--sync-hdgp]`.
+   Import settings (convexDecomposition colliders, merged fixed joints, fixed
+   base) are pinned in the script and contract-checked against the manifest.
+9. If Fabrics needs the robot, add a variant to `tools/gen_fabric_urdfs.py`
+   and run it (`[--sync-hdgp]`); every variant is FK-gated against its RL URDF.
 
 ## Notes
 

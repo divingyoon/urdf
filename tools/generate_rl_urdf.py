@@ -19,6 +19,7 @@ from typing import Iterable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from crop_body_plate import ensure_cropped_meshes  # noqa: E402
+from crop_link7_flange import ensure_link7_flange_mesh  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "generated" / "rl"
@@ -46,6 +47,26 @@ STOCK_LINK7_MESH_SWAP = {
 }
 ARM_FLANGE_LINKS = {"r_al_7", "l_al_7"}
 LINK7_FLANGE_Z = 0.0495
+
+# RH56F1 vendor collision meshes are unrepairably non-watertight (asymmetric
+# across sides; e.g. plam_1 euler=-72), so their finger-chain collisions are
+# replaced with primitives fitted to the scaled mesh AABB: elongated segments
+# become inscribed cylinders (radius from the SMALLEST cross extent - the
+# shells nest closely, a circumscribed fit interpenetrates the neighbours),
+# pads/tips become boxes. palm_2/palm_3 are watertight and keep their meshes.
+# palm_1 is the back cover whose volume palm_2/palm_3 already envelop; a box
+# fit swallows the finger roots (>15mm), so its collision is dropped entirely.
+# Visual geometry is untouched.
+RH_PRIMITIVE_SUFFIXES = tuple(
+    [f"thumb_{i}" for i in range(1, 5)]
+    + [f"{finger}_{i}" for finger in ("index", "middle", "ring", "pinky") for i in (1, 2)]
+    + [f"{finger}_{kind}" for finger in ("thumb", "index", "middle", "ring", "pinky")
+       for kind in ("sensor", "tip")]
+)
+RH_PRIMITIVE_LINKS = {f"{s}_hl_{suffix}" for s in ("r", "l") for suffix in RH_PRIMITIVE_SUFFIXES}
+RH_DROP_COLLISION_LINKS = {f"{s}_hl_palm_1" for s in ("r", "l")}
+# Above this longest/second-longest extent ratio a cylinder fits better than a box.
+RH_CYLINDER_ELONGATION = 1.6
 
 HEAD_DIR = ROOT / "vendor" / "head_realsense_d435i"
 HEAD_URDF = HEAD_DIR / "urdf" / "head.urdf"
@@ -165,6 +186,96 @@ def strip_stock_gripper_motor(root: ET.Element) -> None:
             replacement = STOCK_LINK7_MESH_SWAP.get(base)
             if replacement:
                 mesh.set("filename", f"{head}{sep}{replacement}")
+
+
+def make_self_collision_safe(root: ET.Element, flange_collision_mesh: Path) -> None:
+    """Remove the resting-pose penetrations so self-collision can be enabled.
+
+    With articulation self-collision on, PhysX collides all non-adjacent link
+    pairs. Two pairs interpenetrate at rest by construction and generate
+    phantom forces:
+      - link7 <-> *_hl_adapter: the flange bolts insert 4mm into the adapter
+        plate (collision approximations lose the bolt holes)
+      - link7 <-> *_hl_base: the bolt tips touch the hand mount bottom
+    Fix: the hand-mounted link7 collision uses the bolt-free flange-cut mesh
+    (visual keeps the bolts), and the fully enclosed adapter plate loses its
+    collision geometry (nothing external can ever reach it).
+    """
+    hand_links = ARM_FLANGE_LINKS & hand_mount_parent_links(root)
+    adapter_links = {f"{name[0]}_hl_adapter" for name in hand_links}
+    for link in root.findall("link"):
+        name = link.get("name")
+        if name in hand_links:
+            for collision in link.findall("collision"):
+                mesh = collision.find("geometry/mesh")
+                if mesh is not None:
+                    mesh.set("filename", f"file://{flange_collision_mesh}")
+        elif name in adapter_links:
+            for collision in link.findall("collision"):
+                link.remove(collision)
+
+
+def fit_rh56f1_primitive_collisions(root: ET.Element) -> None:
+    """Swap RH56F1 finger-chain collision meshes for fitted primitives."""
+    import math
+
+    import numpy as np
+    import trimesh
+
+    from gen_fabric_urdfs import mat_to_rpy, rpy_to_mat
+
+    # RH56F1-only: gate on palm_1, which no other asset has (tesollo hands
+    # share finger link names like r_hl_thumb_1 and must keep their meshes)
+    if not any(link.get("name") in RH_DROP_COLLISION_LINKS for link in root.findall("link")):
+        return
+
+    axis_rotation = {
+        0: rpy_to_mat(0.0, math.pi / 2.0, 0.0),  # cylinder z -> x
+        1: rpy_to_mat(math.pi / 2.0, 0.0, 0.0),  # cylinder z -> -y (symmetric)
+        2: np.eye(3),
+    }
+
+    for link in root.findall("link"):
+        if link.get("name") in RH_DROP_COLLISION_LINKS:
+            for collision in link.findall("collision"):
+                link.remove(collision)
+            continue
+        if link.get("name") not in RH_PRIMITIVE_LINKS:
+            continue
+        for collision in link.findall("collision"):
+            mesh_el = collision.find("geometry/mesh")
+            if mesh_el is None:
+                continue
+            path = (mesh_el.get("filename") or "").removeprefix("file://")
+            scale = np.array([float(v) for v in (mesh_el.get("scale") or "1 1 1").split()])
+            vertices = trimesh.load(path, force="mesh").vertices * scale
+            low, high = vertices.min(axis=0), vertices.max(axis=0)
+            center, extents = (low + high) / 2.0, high - low
+
+            origin = collision.find("origin")
+            old_xyz = np.array([float(v) for v in ((origin.get("xyz") if origin is not None else None) or "0 0 0").split()])
+            old_rpy = [float(v) for v in ((origin.get("rpy") if origin is not None else None) or "0 0 0").split()]
+            old_rot = rpy_to_mat(*old_rpy)
+
+            geometry = collision.find("geometry")
+            assert geometry is not None
+            geometry.remove(mesh_el)
+            order = np.argsort(extents)[::-1]
+            if extents[order[0]] / max(extents[order[1]], 1e-9) > RH_CYLINDER_ELONGATION:
+                axis = int(order[0])
+                radius = float(extents[order[2]]) / 2.0  # inscribed: smallest cross extent
+                ET.SubElement(geometry, "cylinder", {
+                    "radius": f"{radius:.6g}", "length": f"{extents[axis]:.6g}",
+                })
+                new_rot = old_rot @ axis_rotation[axis]
+            else:
+                ET.SubElement(geometry, "box", {"size": " ".join(f"{v:.6g}" for v in extents)})
+                new_rot = old_rot
+            new_xyz = old_xyz + old_rot @ center
+            if origin is None:
+                origin = ET.SubElement(collision, "origin")
+            origin.set("xyz", " ".join(f"{v:.6g}" for v in new_xyz))
+            origin.set("rpy", " ".join(f"{v:.6g}" for v in mat_to_rpy(new_rot)))
 
 
 def build_openarm_maps(link_names: set[str], joint_names: set[str]) -> tuple[dict[str, str], dict[str, str]]:
@@ -703,6 +814,9 @@ def write_manifest(
     text.append("# Generated by tools/generate_rl_urdf.py. Do not edit by hand.\n")
     text.append(f"source_urdf: {source_path.relative_to(ROOT)}\n")
     text.append(f"generated_urdf: {urdf_path.relative_to(ROOT)}\n")
+    # USD import contract: hull-only self-collision clearances (see
+    # tools/self_collision_allowlist.yaml) assume this collider approximation.
+    text.append("requires_collision_approximation: convex_decomposition\n")
     text.append("schema:\n")
     text.append("  body_root: stage-level root link with no geometry\n")
     text.append("  body_link: openarm physical base link\n")
@@ -747,6 +861,8 @@ def generate_one(name: str, source_path: Path) -> tuple[Path, Path]:
 
     rename_tree(root, link_map, joint_map)
     strip_stock_gripper_motor(root)
+    make_self_collision_safe(root, ensure_link7_flange_mesh())
+    fit_rh56f1_primitive_collisions(root)
     apply_base_origin_fix(root, ensure_cropped_meshes())
     head_link_map, head_joint_map = attach_head(root)
     link_map, joint_map = merge_maps((link_map, joint_map), (head_link_map, head_joint_map))
@@ -771,16 +887,40 @@ def main(argv: list[str]) -> int:
         nargs="*",
         help="Optional source names to generate. Defaults to all stable source URDFs.",
     )
+    parser.add_argument(
+        "--skip-audit",
+        action="store_true",
+        help="Skip the self-collision audit after generation (used by fast tests).",
+    )
     args = parser.parse_args(argv)
 
     invalid = [name for name in args.names if name not in SOURCES]
     if invalid:
         parser.error(f"unknown source name(s): {', '.join(invalid)}")
     names = args.names or list(SOURCES.keys())
+    generated: list[tuple[Path, Path]] = []
     for name in names:
         urdf_path, manifest_path = generate_one(name, SOURCES[name])
+        generated.append((urdf_path, manifest_path))
         print(f"generated {urdf_path.relative_to(ROOT)}")
         print(f"generated {manifest_path.relative_to(ROOT)}")
+
+    if not args.skip_audit:
+        import audit_self_collision
+
+        ok = True
+        for urdf_path, manifest_path in generated:
+            findings = audit_self_collision.audit_urdf(urdf_path)
+            ok &= audit_self_collision.report(urdf_path.stem, findings)
+            # tools/build_usd.py turns these into PhysX collision filters
+            pairs = audit_self_collision.filtered_pairs(findings)
+            with manifest_path.open("a", encoding="utf-8") as f:
+                f.write("self_collision_filtered_pairs:"
+                        "  # audited near-contact/nested pairs -> USD collision filters\n")
+                f.writelines(f"- [{a}, {b}]\n" for a, b in pairs)
+        if not ok:
+            print("self-collision audit FAILED - asset(s) interpenetrate at rest", file=sys.stderr)
+            return 1
     return 0
 
 
