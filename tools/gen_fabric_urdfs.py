@@ -440,6 +440,12 @@ VARIANTS = {
         "openarm_tesollo_bi_s_left", "openarm_tesollo_bi_s_left", "openarm_tesollo_bi_s_rl", "l"),
     "openarm_tesollo_sensor_left_gripper": lambda: build_gripper(
         "openarm_tesollo_sensor_left_gripper"),
+    # DG-5F 계보. 템플릿은 레거시 openarm_tesollo(같은 DG-5F 손 — 손 관절 20/20 이 sensor 와
+    # 동일, palm 오프셋 0.0698 공통)에서 승격했다. bi_s 템플릿은 DG-5FS 라 마디 origin 이
+    # 최대 51mm 다르고 충돌구는 patch 대상이 아니어서 쓸 수 없다.
+    "openarm_tesollo_sensor_right": lambda: build_tesollo(
+        "openarm_tesollo_sensor_right", "openarm_tesollo_sensor_right",
+        "openarm_tesollo_sensor_rl", "r"),
     "openarm_rh56f1": build_rh56f1,
 }
 
