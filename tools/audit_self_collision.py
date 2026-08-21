@@ -44,10 +44,6 @@ ALLOWLIST_PATH = Path(__file__).resolve().parent / "self_collision_allowlist.yam
 
 # Penetrations below this are treated as contact-solver noise, not defects.
 PENETRATION_LIMIT_M = 0.0005
-# Convex-decomposition cooking inflates hulls by a few millimetres (measured:
-# a 2.8mm clearance produced ~4kN phantom contacts), so WARN pairs with less
-# raw clearance than this must be collision-filtered in the USD.
-FILTER_CLEARANCE_M = 0.005
 # Cap on query points per mesh to keep the audit fast; deterministic stride.
 MAX_QUERY_POINTS = 4000
 
@@ -329,12 +325,15 @@ def audit_urdf(urdf_path: Path, pose: dict[str, float] | None = None) -> list[Fi
 
 
 def filtered_pairs(findings: list[Finding]) -> list[tuple[str, str]]:
-    """WARN pairs that need USD collision filtering (see FILTER_CLEARANCE_M)."""
-    return [
-        (f.link_a, f.link_b)
-        for f in findings
-        if f.verdict == "WARN" and (f.raw_depth_m is None or f.raw_depth_m > -FILTER_CLEARANCE_M)
-    ]
+    """WARN pairs that need USD collision filtering.
+
+    Every WARN pair is a place where a convex approximation differs from the
+    raw geometry (hull artifacts, cooking inflation, nested vendor shells).
+    The built USD defaults to convexHull colliders (cheap cooking - a full
+    convex decomposition made env spawn minutes-slow), so ALL of them must be
+    collision-filtered, not only the near-contact ones.
+    """
+    return [(f.link_a, f.link_b) for f in findings if f.verdict == "WARN"]
 
 
 def report(name: str, findings: list[Finding]) -> bool:

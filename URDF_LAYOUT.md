@@ -78,12 +78,13 @@ convexDecomposition import) WARN, documented in
 `tools/self_collision_allowlist.yaml`. The manifest records the requirement
 as `requires_collision_approximation: convex_decomposition`.
 
-Filtered pairs: the audit exports its WARN pairs whose raw clearance is
-within convex-decomposition cooking inflation (<5mm; measured: a 2.8mm
-palm-thumb pocket clearance produced ~4kN phantom contacts) into the manifest
-(`self_collision_filtered_pairs`), and `tools/build_usd.py` authors them as
-PhysX `PhysicsFilteredPairsAPI` on the corresponding bodies. Everything else keeps
-full self-collision. Zero-action probes (`tools/probe_zero_action.py`, one
+Filtered pairs: the audit exports ALL its WARN pairs (every place a convex
+approximation differs from the raw geometry - hull artifacts, cooking
+inflation, nested vendor shells; measured: a 2.8mm palm-thumb pocket
+clearance produced ~4kN phantom contacts under decomposition cooking) into
+the manifest (`self_collision_filtered_pairs`), and `tools/build_usd.py`
+authors them as PhysX `PhysicsFilteredPairsAPI` on the corresponding bodies.
+Everything else keeps full self-collision. Zero-action probes (`tools/probe_zero_action.py`, one
 robot per process) confirm all four assets hold <1e-5 rad drift over 200
 steps with `enabled_self_collisions=True`.
 
@@ -102,9 +103,17 @@ training cloner replicates identical flags, so this only bites hand-written
 probes.
 
 USD build: `IsaacLab/isaaclab.sh -p tools/build_usd.py [asset...] [--sync-hdgp]`
-replaces the manual GUI import. Settings are pinned (collider_type
-convex_decomposition, **merge_fixed_joints=False**, fix_base; runtime cfg
-decides `enabled_self_collisions`). Merging must stay OFF: hdgp addresses
+replaces the manual GUI import. Settings are pinned (**merge_fixed_joints=False**,
+fix_base; runtime cfg decides `enabled_self_collisions`). Colliders are
+**convexDecomposition everywhere**. A convexHull build (the GUI-era default)
+was attempted for spawn speed and REVERTED: PhysX GPU caps convex hulls at 64
+vertices, and the 64-vertex circumscribed hull of a large mesh inflates tens
+of millimetres past the exact hull - measured ghost contacts across a 9.6mm
+gap (l_al_5/l_al_7, 427kN) and even a 36mm gap (body/gripper finger). That is
+incompatible with `enabled_self_collisions=True` and cannot be audited
+offline; GUI-era hull assets only worked because self-collision was always
+off. Slow first env boot is decomposition cooking - it is cached per machine
+afterwards. Merging must stay OFF: hdgp addresses
 bodies by name - `*_tip` are the tactile contact-sensor bodies and `*_hl_palm`
 carries the pose frame - and merging silently absorbs them (bi_s 84 -> 64
 bodies, contact sensors then fail at boot). The build verifies the manifest

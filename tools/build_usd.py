@@ -70,6 +70,16 @@ HDGP_ROBOT_DIR = ROOT.parent / "hdgp" / "assets" / "robot"
 DRIVE_STIFFNESS = 100.0
 DRIVE_DAMPING = 1.0
 
+# Collider approximation: convexDecomposition on EVERY mesh collider.
+# A convexHull build was attempted for spawn speed (GUI-era assets were 100%
+# hull) and REVERTED: PhysX GPU limits convex hulls to 64 vertices, and the
+# 64-vertex circumscribed hull of a large mesh inflates tens of millimetres
+# past the exact hull - measured ghost contacts across a 9.6mm (l_al_5/l_al_7,
+# 427kN) and even a 36mm gap (body/gripper finger). That is incompatible with
+# enabled_self_collisions=True and cannot be audited offline. The GUI-era hull
+# assets only worked because self-collision was always off. Slow first boot is
+# decomposition cooking; it is cached per machine afterwards.
+
 
 def convert(asset: str) -> Path:
     urdf_path = RL_DIR / f"{asset}.urdf"
@@ -102,7 +112,7 @@ def convert(asset: str) -> Path:
             "regenerate with `python3 tools/generate_rl_urdf.py` (audit enabled)"
         )
     usd_path = Path(UrdfConverter(converter_cfg).usd_path)
-    verify_contract(usd_path, manifest, asset, collider_type, urdf_path)
+    verify_contract(usd_path, manifest, asset, urdf_path)
     apply_collision_filters(usd_path, urdf_path, asset,
                             [tuple(p) for p in manifest["self_collision_filtered_pairs"]])
     patch_visuals_prims(out_dir, asset, urdf_path)
@@ -193,7 +203,7 @@ def apply_collision_filters(usd_path: Path, urdf_path: Path, asset: str,
           f"(from {len(pairs)} audited link pairs)")
 
 
-def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: str,
+def verify_contract(usd_path: Path, manifest: dict, asset: str,
                     urdf_path: Path | None = None) -> None:
     """Manifest joints and every inertial link must exist; colliders must match collider_type.
 
@@ -206,7 +216,8 @@ def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: s
     stage = Usd.Stage.Open(str(usd_path))
     usd_joints = set()
     usd_bodies = set()
-    approximations = set()
+    wrong_approximations = []
+    counts: dict[str, int] = {}
     # instance proxies included: collision meshes live inside instanceable prims
     for prim in Usd.PrimRange.Stage(stage, Usd.TraverseInstanceProxies()):
         if prim.IsA(UsdPhysics.RevoluteJoint) or prim.IsA(UsdPhysics.PrismaticJoint):
@@ -214,7 +225,10 @@ def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: s
         if prim.HasAPI(UsdPhysics.RigidBodyAPI):
             usd_bodies.add(prim.GetName())
         if prim.HasAPI(UsdPhysics.MeshCollisionAPI):
-            approximations.add(UsdPhysics.MeshCollisionAPI(prim).GetApproximationAttr().Get())
+            got = UsdPhysics.MeshCollisionAPI(prim).GetApproximationAttr().Get()
+            counts[got] = counts.get(got, 0) + 1
+            if got != "convexDecomposition":
+                wrong_approximations.append((prim.GetPath().pathString, got, "convexDecomposition"))
 
     if urdf_path is not None:
         # Every link with an <inertial> is a body downstream code may address.
@@ -236,12 +250,15 @@ def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: s
             f"[{asset}] USD joint contract FAILED - {len(missing)} control joints missing: "
             f"{', '.join(missing[:8])}{' ...' if len(missing) > 8 else ''}"
         )
-    wanted = "convexDecomposition" if collider_type == "convex_decomposition" else collider_type
-    if approximations != {wanted}:
-        raise SystemExit(f"[{asset}] collider approximation FAILED: found {approximations}, want {wanted}")
+    if wrong_approximations:
+        first = wrong_approximations[0]
+        raise SystemExit(
+            f"[{asset}] collider approximation FAILED for {len(wrong_approximations)} "
+            f"colliders, e.g. {first[0]}: got {first[1]}, want {first[2]}"
+        )
     extra = sorted(usd_joints - expected)
     print(f"[{asset}] contract ok: {len(expected)} control joints, "
-          f"{len(usd_bodies)} rigid bodies, colliders {wanted}"
+          f"{len(usd_bodies)} rigid bodies, colliders {counts}"
           + (f"; extra articulated joints: {', '.join(extra)}" if extra else ""))
 
 
