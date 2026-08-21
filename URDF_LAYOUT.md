@@ -82,7 +82,7 @@ Filtered pairs: the audit exports its WARN pairs whose raw clearance is
 within convex-decomposition cooking inflation (<5mm; measured: a 2.8mm
 palm-thumb pocket clearance produced ~4kN phantom contacts) into the manifest
 (`self_collision_filtered_pairs`), and `tools/build_usd.py` authors them as
-PhysX `PhysicsFilteredPairsAPI` on the merged bodies. Everything else keeps
+PhysX `PhysicsFilteredPairsAPI` on the corresponding bodies. Everything else keeps
 full self-collision. Zero-action probes (`tools/probe_zero_action.py`, one
 robot per process) confirm all four assets hold <1e-5 rad drift over 200
 steps with `enabled_self_collisions=True`.
@@ -103,10 +103,14 @@ probes.
 
 USD build: `IsaacLab/isaaclab.sh -p tools/build_usd.py [asset...] [--sync-hdgp]`
 replaces the manual GUI import. Settings are pinned (collider_type
-convex_decomposition, merge_fixed_joints, fix_base; runtime cfg decides
-`enabled_self_collisions`); the importer emits the same layered structure as
-the GUI (`<asset>.usd` + `configuration/*.usd`), and the build verifies the
-manifest joint contract plus collider approximation. Each
+convex_decomposition, **merge_fixed_joints=False**, fix_base; runtime cfg
+decides `enabled_self_collisions`). Merging must stay OFF: hdgp addresses
+bodies by name - `*_tip` are the tactile contact-sensor bodies and `*_hl_palm`
+carries the pose frame - and merging silently absorbs them (bi_s 84 -> 64
+bodies, contact sensors then fail at boot). The build verifies the manifest
+joint contract, an inertial-link body contract, and the collider
+approximation; the importer emits the same layered structure as the GUI
+(`<asset>.usd` + `configuration/*.usd`). Each
 `generated/rl/<asset>/` directory is a self-contained bundle: the USD layer
 stack plus the exact `.urdf` and `_manifest.yaml` it was built from
 (`--sync-hdgp` mirrors the whole bundle to `hdgp/assets/robot/<asset>/`). Caveat: the urdf importer

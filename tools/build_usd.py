@@ -8,9 +8,14 @@ code so they can never drift from what the asset pipeline assumes:
   (tools/audit_self_collision.py) - a plain convex hull fills concave pockets
   (e.g. the palm's thumb pocket) and fabricates resting penetrations. The
   manifest records this as `requires_collision_approximation`.
-- merge_fixed_joints True: matches the historical GUI imports; downstream code
-  compensates for merged fixed frames (e.g. head_cam_view offsets come from
-  the manifest, not USD frames).
+- merge_fixed_joints False: the historical GUI imports did NOT merge. Measured
+  on the previous openarm_tesollo_bi_s_rl USD: 77 rigid bodies including every
+  `*_hl_palm` and `*_tip`. Merging drops 20 bodies, and hdgp addresses them by
+  name - `palm_body` (the pose every fabric/IK/reward term is built on) and the
+  fingertip contact sensors. With merge on the env dies at boot:
+  "Sensor at path '.../r_hl_thumb_tip' could not find any bodies with contact
+  reporter API". The body contract is verified below so this cannot regress
+  silently again.
 - fix_base True, import-time self_collision False (the training cfg decides
   `enabled_self_collisions` at runtime).
 - joint drive: position targets with placeholder PD gains - hdgp actuator
@@ -81,7 +86,7 @@ def convert(asset: str) -> Path:
         usd_file_name=f"{asset}.usd",
         force_usd_conversion=True,
         fix_base=True,
-        merge_fixed_joints=True,
+        merge_fixed_joints=False,
         self_collision=False,
         collider_type=collider_type,
         joint_drive=UrdfConverterCfg.JointDriveCfg(
@@ -97,7 +102,7 @@ def convert(asset: str) -> Path:
             "regenerate with `python3 tools/generate_rl_urdf.py` (audit enabled)"
         )
     usd_path = Path(UrdfConverter(converter_cfg).usd_path)
-    verify_contract(usd_path, manifest, asset, collider_type)
+    verify_contract(usd_path, manifest, asset, collider_type, urdf_path)
     apply_collision_filters(usd_path, urdf_path, asset,
                             [tuple(p) for p in manifest["self_collision_filtered_pairs"]])
     # make generated/rl/<asset>/ a self-contained bundle: usd layers + the
@@ -163,17 +168,41 @@ def apply_collision_filters(usd_path: Path, urdf_path: Path, asset: str,
           f"(from {len(pairs)} audited link pairs)")
 
 
-def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: str) -> None:
-    """Manifest joints must exist; every mesh collider must use collider_type."""
+def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: str,
+                    urdf_path: Path | None = None) -> None:
+    """Manifest joints and every inertial link must exist; colliders must match collider_type.
+
+    ★The body check is not decorative. hdgp addresses bodies **by name** -
+    `palm_body` carries the pose that every fabric/IK/reward term is built on,
+    and the fingertip contact sensors point at `*_tip`. A build that merges
+    fixed joints silently drops 20 of them (77 -> 57 on bi_s) and this function
+    still printed "contract ok", because it only ever looked at joints.
+    """
     stage = Usd.Stage.Open(str(usd_path))
     usd_joints = set()
+    usd_bodies = set()
     approximations = set()
     # instance proxies included: collision meshes live inside instanceable prims
     for prim in Usd.PrimRange.Stage(stage, Usd.TraverseInstanceProxies()):
         if prim.IsA(UsdPhysics.RevoluteJoint) or prim.IsA(UsdPhysics.PrismaticJoint):
             usd_joints.add(prim.GetName())
+        if prim.HasAPI(UsdPhysics.RigidBodyAPI):
+            usd_bodies.add(prim.GetName())
         if prim.HasAPI(UsdPhysics.MeshCollisionAPI):
             approximations.add(UsdPhysics.MeshCollisionAPI(prim).GetApproximationAttr().Get())
+
+    if urdf_path is not None:
+        # Every link with an <inertial> is a body downstream code may address.
+        want_bodies = {link.get("name")
+                       for link in ET.parse(urdf_path).getroot().findall("link")
+                       if link.find("inertial") is not None}
+        lost = sorted(want_bodies - usd_bodies)
+        if lost:
+            raise SystemExit(
+                f"[{asset}] USD body contract FAILED - {len(lost)} inertial links are not "
+                f"rigid bodies (fixed-joint merging?): {', '.join(lost[:8])}"
+                f"{' ...' if len(lost) > 8 else ''}"
+            )
 
     expected = set(manifest["control_joint_order"])
     missing = sorted(expected - usd_joints)
@@ -186,7 +215,8 @@ def verify_contract(usd_path: Path, manifest: dict, asset: str, collider_type: s
     if approximations != {wanted}:
         raise SystemExit(f"[{asset}] collider approximation FAILED: found {approximations}, want {wanted}")
     extra = sorted(usd_joints - expected)
-    print(f"[{asset}] contract ok: {len(expected)} control joints, colliders {wanted}"
+    print(f"[{asset}] contract ok: {len(expected)} control joints, "
+          f"{len(usd_bodies)} rigid bodies, colliders {wanted}"
           + (f"; extra articulated joints: {', '.join(extra)}" if extra else ""))
 
 

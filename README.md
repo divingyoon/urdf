@@ -379,7 +379,7 @@ And always load the matching manifest:
 7. Verify the new manifest's `control_joint_order` matches the desired action vector.
 8. Build the USD headlessly (no GUI import):
    `/home/user/rl_ws/IsaacLab/isaaclab.sh -p tools/build_usd.py <asset> [--sync-hdgp]`.
-   Import settings (convexDecomposition colliders, merged fixed joints, fixed
+   Import settings (convexDecomposition colliders, unmerged fixed joints, fixed
    base) are pinned in the script and contract-checked against the manifest.
 9. If Fabrics needs the robot, add a variant to `tools/gen_fabric_urdfs.py`
    and run it (`[--sync-hdgp]`); every variant is FK-gated against its RL URDF.
