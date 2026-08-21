@@ -105,11 +105,36 @@ def convert(asset: str) -> Path:
     verify_contract(usd_path, manifest, asset, collider_type, urdf_path)
     apply_collision_filters(usd_path, urdf_path, asset,
                             [tuple(p) for p in manifest["self_collision_filtered_pairs"]])
+    patch_visuals_prims(out_dir, asset, urdf_path)
     # make generated/rl/<asset>/ a self-contained bundle: usd layers + the
     # exact urdf/manifest the usd was built from
     for source in (urdf_path, manifest_path):
         shutil.copyfile(source, out_dir / source.name)
     return usd_path
+
+
+def patch_visuals_prims(out_dir: Path, asset: str, urdf_path: Path) -> None:
+    """Define empty /visuals/<link> prims the importer forgot.
+
+    base.usd references /visuals/<link> in the physics/base layers for every
+    link, but links without visual geometry (massless frames like *_hl_mount,
+    palm_alias, head_cam_view) never get one - every stage open then spams
+    'Unresolved reference' warnings (the old GUI pipeline had the same defect,
+    patched ad hoc by IsaacLab scripts/tools/fix_openarm_physics_usd.py).
+    """
+    link_names = [link.get("name") or "" for link in ET.parse(urdf_path).getroot().findall("link")]
+    for layer_name in (f"{asset}_physics.usd", f"{asset}_base.usd"):
+        layer_path = out_dir / "configuration" / layer_name
+        stage = Usd.Stage.Open(str(layer_path))
+        patched = 0
+        for link in link_names:
+            path = f"/visuals/{link}"
+            if not stage.GetPrimAtPath(path).IsValid():
+                stage.DefinePrim(path, "Xform")
+                patched += 1
+        if patched:
+            stage.GetRootLayer().Save()
+            print(f"[{asset}] patched {patched} missing /visuals prims in {layer_name}")
 
 
 def merged_body_resolver(urdf_path: Path, bodies: set[str]):
