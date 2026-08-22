@@ -72,7 +72,8 @@ are removed by the generator: the hand-mounted link7 *collision* uses the
 bolt-free `generated/rl/meshes/link7_flange_cut.stl` (visual keeps the bolts),
 and the enclosed `*_hl_adapter` plate has visual-only geometry.
 `tools/audit_self_collision.py` enforces this permanently: it reproduces the
-PhysX pairing rule (non-adjacent pairs only) at zero pose and FAILs the
+PhysX pairing rule (non-adjacent pairs only) at zero pose AND at every
+task-home pose registered in `tools/audit_poses.yaml`, and FAILs the
 generator on any raw-mesh penetration; hull-only findings (safe with
 convexDecomposition import) WARN, documented in
 `tools/self_collision_allowlist.yaml`. The manifest records the requirement
@@ -84,9 +85,15 @@ inflation, nested vendor shells; measured: a 2.8mm palm-thumb pocket
 clearance produced ~4kN phantom contacts under decomposition cooking) into
 the manifest (`self_collision_filtered_pairs`), and `tools/build_usd.py`
 authors them as PhysX `PhysicsFilteredPairsAPI` on the corresponding bodies.
+The pair set is the union over all audited poses and is left/right
+symmetrized (mirror links, when both exist): zero pose alone missed
+`l_al_5<->l_al_7` on the sensor asset - 19mm clear at zero, but the left
+gripper task home's j7 flex narrows it to 3.2mm raw clearance, which
+decomposition cooking bridged into a 5.4kN phantom contact. New task homes
+derived in hdgp should be registered in `tools/audit_poses.yaml`.
 Everything else keeps full self-collision. Zero-action probes (`tools/probe_zero_action.py`, one
 robot per process) confirm all four assets hold <1e-5 rad drift over 200
-steps with `enabled_self_collisions=True`.
+steps with `enabled_self_collisions=True` at zero pose.
 
 RH56F1 note: its vendor collision meshes were unrepairably non-watertight, so
 the generator replaces the finger-chain collisions with fitted primitives

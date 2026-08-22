@@ -29,11 +29,44 @@ def generated_outputs() -> None:
 
 @pytest.mark.parametrize("name", RL_NAMES)
 def test_audit_passes_for_generated_assets(name: str) -> None:
-    findings = audit.audit_urdf(gen.OUT_DIR / f"{name}_rl.urdf")
-    failures = [f for f in findings if f.verdict == "FAIL"]
-    assert not failures, [
-        (f.link_a, f.link_b, f.hull_depth_m, f.raw_depth_m, f.reason) for f in failures
-    ]
+    """Zero pose AND every registered task-home pose must be raw-clean."""
+    for pose_name, findings in audit.audit_asset(gen.OUT_DIR / f"{name}_rl.urdf").items():
+        failures = [f for f in findings if f.verdict == "FAIL"]
+        assert not failures, [
+            (pose_name, f.link_a, f.link_b, f.hull_depth_m, f.raw_depth_m, f.reason)
+            for f in failures
+        ]
+
+
+def test_left_wrist_home_pair_is_filtered() -> None:
+    """Regression: l_al_5<->l_al_7 only approaches at the LEFT task home.
+
+    Zero pose leaves it 19mm clear, so the zero-only audit missed it and the
+    built USD lacked the filter - measured 5.4kN phantom contact at the left
+    gripper home (j7 flex narrows the raw clearance to 3.2mm). Two
+    independent mechanisms must each cover it now:
+    1. mirror symmetrization of the r_al_5<->r_al_7 zero-pose WARN
+    2. the registered task-home poses in audit_poses.yaml
+    """
+    urdf_path = gen.OUT_DIR / "openarm_tesollo_sensor_rl.urdf"
+    links = audit.urdf_link_names(urdf_path)
+
+    zero_findings = audit.audit_urdf(urdf_path)
+    assert ("l_al_5", "l_al_7") in audit.filtered_pairs(zero_findings, links)
+
+    poses = audit.load_audit_poses(urdf_path.stem)
+    legacy = poses.get("left_gripper_legacy_home")
+    assert legacy and legacy["l_aj_7"] == pytest.approx(1.3563)
+    home_findings = audit.audit_urdf(urdf_path, legacy)
+    warned = {(f.link_a, f.link_b) for f in home_findings if f.verdict == "WARN"}
+    assert ("l_al_5", "l_al_7") in warned
+
+
+def test_filtered_pairs_mirror_requires_existing_links() -> None:
+    """Mirroring must not invent pairs for links the asset does not have."""
+    finding = audit.Finding("body_link", "l_hl_gripper_base", 0.001, None, "WARN", "test")
+    links = {"body_link", "l_hl_gripper_base", "r_hl_base"}  # no r_hl_gripper_base
+    assert audit.filtered_pairs([finding], links) == [("body_link", "l_hl_gripper_base")]
 
 
 def test_audit_detects_reintroduced_penetration(tmp_path: Path) -> None:

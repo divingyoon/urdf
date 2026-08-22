@@ -302,6 +302,7 @@ source_to_canonical_links:
   world: body_root
 self_collision_filtered_pairs:  # audited near-contact/nested pairs -> USD collision filters
 - [body_link, l_hl_gripper_base]
+- [l_al_5, l_al_7]
 - [r_al_5, r_al_7]
 - [r_hl_base, r_hl_thumb_1]
 - [r_hl_palm, r_hl_ring_2]

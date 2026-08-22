@@ -20,7 +20,14 @@ for every non-adjacent pair, in two modes:
 Pairs whose raw meshes cannot be made watertight (even after hole filling)
 cannot be disproven and FAIL conservatively.
 
-Run standalone (all generated RL assets, zero pose):
+Zero pose alone is a blind spot: a pair can be clear at zero but approach
+within cooking-inflation range only at a task home (measured: the sensor
+asset's left wrist home flex narrows l_al_5<->l_al_7 from 19mm to 3.2mm).
+Task homes are registered in tools/audit_poses.yaml and audited in addition
+to zero pose; WARN pairs from every pose are unioned into the manifest
+filter list, symmetrized across the left/right arm mirror.
+
+Run standalone (all generated RL assets, zero pose + registered poses):
 
     python3 tools/audit_self_collision.py [asset names...] [--pose j=rad ...]
 
@@ -41,6 +48,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 RL_DIR = ROOT / "generated" / "rl"
 ALLOWLIST_PATH = Path(__file__).resolve().parent / "self_collision_allowlist.yaml"
+POSES_PATH = Path(__file__).resolve().parent / "audit_poses.yaml"
 
 # Penetrations below this are treated as contact-solver noise, not defects.
 PENETRATION_LIMIT_M = 0.0005
@@ -324,16 +332,66 @@ def audit_urdf(urdf_path: Path, pose: dict[str, float] | None = None) -> list[Fi
     return findings
 
 
-def filtered_pairs(findings: list[Finding]) -> list[tuple[str, str]]:
+def load_audit_poses(asset_stem: str) -> dict[str, dict[str, float]]:
+    """Registered task-home poses for one asset (pose name -> {joint: rad})."""
+    import yaml
+
+    if not POSES_PATH.is_file():
+        return {}
+    data = yaml.safe_load(POSES_PATH.read_text(encoding="utf-8")) or {}
+    poses = data.get(asset_stem) or {}
+    return {name: {j: float(v) for j, v in joints.items()} for name, joints in poses.items()}
+
+
+def audit_asset(urdf_path: Path) -> dict[str, list[Finding]]:
+    """Audit one asset at zero pose plus every registered task-home pose."""
+    results = {"zero": audit_urdf(urdf_path)}
+    for pose_name, pose in load_audit_poses(urdf_path.stem).items():
+        results[pose_name] = audit_urdf(urdf_path, pose)
+    return results
+
+
+def urdf_link_names(urdf_path: Path) -> set[str]:
+    root = ET.parse(urdf_path).getroot()
+    return {name for link in root.findall("link") if (name := link.get("name"))}
+
+
+def mirror_link(name: str) -> str | None:
+    if name.startswith("r_"):
+        return "l_" + name[2:]
+    if name.startswith("l_"):
+        return "r_" + name[2:]
+    return None
+
+
+def filtered_pairs(
+    findings: list[Finding], link_names: set[str] | None = None
+) -> list[tuple[str, str]]:
     """WARN pairs that need USD collision filtering.
 
     Every WARN pair is a place where a convex approximation differs from the
     raw geometry (hull artifacts, cooking inflation, nested vendor shells).
-    The built USD defaults to convexHull colliders (cheap cooking - a full
-    convex decomposition made env spawn minutes-slow), so ALL of them must be
-    collision-filtered, not only the near-contact ones.
+    The built USD uses convexDecomposition colliders, whose cooking still
+    inflates a few millimetres (measured: a 2.8mm raw clearance produced
+    ~4kN phantom contacts), so ALL of them are collision-filtered, not only
+    the near-contact ones.
+
+    When link_names is given, pairs are symmetrized across the left/right
+    arm mirror: the arms are mirrored geometry, so any near-contact pair on
+    one side exists on the other at the mirrored pose even if the audited
+    poses never reach it (regression: r_al_5<->r_al_7 WARNed at zero pose
+    but the l_ mirror only approaches at the left task home).
     """
-    return [(f.link_a, f.link_b) for f in findings if f.verdict == "WARN"]
+    def ordered(a: str, b: str) -> tuple[str, str]:
+        return (a, b) if a <= b else (b, a)
+
+    pairs = {ordered(f.link_a, f.link_b) for f in findings if f.verdict == "WARN"}
+    if link_names is not None:
+        for link_a, link_b in list(pairs):
+            mirrored_a, mirrored_b = mirror_link(link_a), mirror_link(link_b)
+            if mirrored_a in link_names and mirrored_b in link_names:
+                pairs.add(ordered(mirrored_a, mirrored_b))
+    return sorted(pairs)
 
 
 def report(name: str, findings: list[Finding]) -> bool:
@@ -363,7 +421,8 @@ def main(argv: list[str]) -> int:
     parser.add_argument("names", nargs="*",
                         help="Asset names (default: every generated/rl/*_rl.urdf).")
     parser.add_argument("--pose", action="append", default=[], metavar="JOINT=RAD",
-                        help="Joint angle override; repeatable. Default pose is all-zero.")
+                        help="Audit only this custom pose (repeatable joint overrides). "
+                             "Default: zero pose plus every pose in audit_poses.yaml.")
     args = parser.parse_args(argv)
 
     if args.names:
@@ -377,7 +436,11 @@ def main(argv: list[str]) -> int:
     pose = parse_pose(args.pose)
     ok = True
     for path in paths:
-        ok &= report(path.stem, audit_urdf(path, pose))
+        if pose:
+            ok &= report(f"{path.stem}@custom", audit_urdf(path, pose))
+        else:
+            for pose_name, findings in audit_asset(path).items():
+                ok &= report(f"{path.stem}@{pose_name}", findings)
     return 0 if ok else 1
 
 

@@ -910,10 +910,17 @@ def main(argv: list[str]) -> int:
 
         ok = True
         for urdf_path, manifest_path in generated:
-            findings = audit_self_collision.audit_urdf(urdf_path)
-            ok &= audit_self_collision.report(urdf_path.stem, findings)
-            # tools/build_usd.py turns these into PhysX collision filters
-            pairs = audit_self_collision.filtered_pairs(findings)
+            # Zero pose plus registered task homes (tools/audit_poses.yaml):
+            # near-contact pairs can appear only at a task home.
+            pose_findings = audit_self_collision.audit_asset(urdf_path)
+            all_findings: list = []
+            for pose_name, findings in pose_findings.items():
+                ok &= audit_self_collision.report(f"{urdf_path.stem}@{pose_name}", findings)
+                all_findings.extend(findings)
+            # tools/build_usd.py turns these into PhysX collision filters;
+            # WARN pairs are unioned across poses and left/right symmetrized.
+            pairs = audit_self_collision.filtered_pairs(
+                all_findings, audit_self_collision.urdf_link_names(urdf_path))
             with manifest_path.open("a", encoding="utf-8") as f:
                 f.write("self_collision_filtered_pairs:"
                         "  # audited near-contact/nested pairs -> USD collision filters\n")
